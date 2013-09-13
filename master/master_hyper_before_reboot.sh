@@ -1,3 +1,4 @@
+#!/bin/bash
 #########################################
 # Description:
 # deploy on master hypervisor
@@ -6,8 +7,25 @@
 #########################################
 
 ####### variable init ############
-eth_num=eth0  # active network interface
-curtime="2007-08-03 14:15:00" # current time 
+Usage(){
+ echo "
+Usage:
+ ./${0} eth[x] time  
+ egg: ./$0 eth0 \"2007-08-03 14:15:00\"
+"
+}
+if [   $# -ne 2  ] 
+then 
+    Usage 
+    exit 1
+fi
+
+eth_num=$1  # active network interface
+curtime=$2 # current time 
+
+# change time in the front 
+date -s $curtime
+hwdate -w
 
 ip=`grep 'hvn1 ' ../hosts | awk '{print $1}' `     # current machine ip
 ########################################
@@ -51,7 +69,5 @@ service xend restart
 ########################################
 # step 4 time sync
 ########################################
-date -s $curtime
-hwdate -w
 chkconfig ntp on 
 service ntp start 

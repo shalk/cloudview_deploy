@@ -1,3 +1,4 @@
+#!/bin/bash
 #########################################
 # Description:
 # deploy on normal  hypervisor
@@ -6,9 +7,21 @@
 #########################################
 
 ####### variable init ############
-ip="10.0.23.71" # current machine ip
-eth_num=eth0  # active network interface
-curtime="2007-08-03 14:15:00" # current time 
+Usage(){
+ echo "
+Usage:
+ ./${0} eth[x] ip  
+ egg: ./$0 eth0 \"10.0.23.11\"
+"
+}
+if [   $# -ne 2  ] 
+then 
+    Usage 
+    exit 1
+fi
+
+ip=$2 # current machine ip
+eth_num=$1  # active network interface
 
 
 ###############################################3
