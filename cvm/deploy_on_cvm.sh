@@ -103,9 +103,8 @@ expect -c "
    "
 cd $tmppath
 
-cd /opt/msp/cvm/scripts/collect_agent
+cd /opt/msp/collect_agent
 rm node_list
-perl -lane "print @F[0] if /hvn/ "  /etc/hosts > /opt/msp/cvm/scripts/collect_agent/node_list
+perl -lane "print @F[0] if /hvn/ "  /etc/hosts > /opt/msp/collect_agent/node_list
 sh batch_install_collect_node.sh 
-
 cd $tmppath
