@@ -1,10 +1,5 @@
 
-old Flow
+ Flow
 1. make sure that  the cvm 's network ok
 2. copy all the the project on the cvm
-3. #add cvm into the nopasswd cluster >> merge into script
-4. excute  deploy_on_cvm.sh
-
-new Flow
-1.comfigure network.
-2.excute the script.
+3. excute  deploy_on_cvm.sh

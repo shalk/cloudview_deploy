@@ -1,5 +1,16 @@
 #!/bin/bash
+
 time_server_ip=`grep "hvn1 " ../hosts | awk '{print $1}' `
+###################
+# check network 
+##################
+if   ping  $time_server_ip  -c 2 > /dev/null
+then
+     echo 
+else
+    echo "ping $time_server_ip is failed , Please check the network!"
+    exit 1
+fi
 
 ############################################
 # add into cluster
