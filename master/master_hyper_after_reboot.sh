@@ -6,9 +6,9 @@
 ######################################### 
 
 
-nodenum=`wc -l ../hosts | awk '{print $1-1}'` # 
+nodenum=`grep hvn ../hosts | wc -l  | awk '{print $1}'` # 
 tmppath=`pwd`
-nodelist=`seq -f 'node%g' -s ','  1 $nodenum`
+nodelist=`seq -f 'hvn%g' -s ','  1 $nodenum`
 cd ../utility/nopasswd/
 chmod a+x * 
 ./makessh  --passwd  111111  --nodes  $nodelist 
@@ -22,7 +22,7 @@ unset nodenum
 
 tmppath=`pwd`
 echo 'configure each hypervisor '
-cd ../utility/cvm-hypervisor-install-2.1/ 
+cd ../cloudview/Supports/third-party_tools/cvm-hypervisor-install/cvm-hypervisor-install-2.1/
 chmod a+x install 
 ./install 
 cd $tmppath

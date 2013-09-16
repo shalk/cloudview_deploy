@@ -26,7 +26,7 @@ eth_num=$1  # active network interface
 
 ###############################################3
 cp -rf ../hosts  /etc/hosts
-currenthostname=`grep $ip hosts | awk '{print $2}'`
+currenthostname=`grep $ip /etc/hosts | awk '{print $2}'`
 echo $currenthostname > /etc/HOSTNAME
 hostname $currenthostname 
 unset currenthostname

@@ -4,6 +4,13 @@ time_server_ip=`grep "hvn1 " ../hosts | awk '{print $1}' `
 ###################
 # check network 
 ##################
+if cd ../cloudview > /dev/null
+then
+        echo
+else
+        echo "ln -s  ../cloudview   cloudview_fullname_and_fullpath "
+        exit 1
+fi
 if   ping  $time_server_ip  -c 2 > /dev/null
 then
      echo 

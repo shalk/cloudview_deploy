@@ -32,7 +32,7 @@ ip=`grep 'hvn1 ' ../hosts | awk '{print $1}' `     # current machine ip
 # copy hosts file
 #########################################
 cp -rf ../hosts  /etc/hosts
-currenthostname=`grep $ip hosts | awk '{print $2}'`
+currenthostname=`grep $ip /etc/hosts | awk '{print $2}'`
 echo $currenthostname > /etc/HOSTNAME
 hostname $currenthostname 
 ########################################
