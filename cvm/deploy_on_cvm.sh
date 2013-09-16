@@ -1,8 +1,22 @@
 #!/bin/bash
 time_server_ip=`grep "hvn1 " ../hosts | awk '{print $1}' `
 
+############################################
+# add into cluster
+############################3
+expect -c "
+ 	spawn scp -r $time_server_ip:/root/.ssh/  /root
+	expect {
+	\"not know\" {send_user \"[exec echo \"not know\"]\";exit}
+	\"(yes/no)?\" {send \"yes\r\";exp_continue}
+	\"password:\" {send  \"111111\r\";exp_continue}
+	\"Password:\" {send  \"111111\r\";exp_continue}
+	\"Permission denied, please try again.\" {send_user \"[exec echo \"Error:Password is wrong\"]\" exit  }
+	}
+"
+
 #########################################  
-# step 1  time sync
+# step   time sync
 #  sync time with master 
 ######################################### 
 
@@ -70,11 +84,3 @@ expect -c "
    }
    "
 cd $tmppath
-
-cd /opt/msp/cvm/scripts/collect_agent
-rm node_list
-perl -lane "print @F[0] if /hvn/ "  /etc/hosts > node_list
-sh batch_install_collect_node.sh 
-
-cd $tmppath
-
