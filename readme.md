@@ -10,9 +10,8 @@ The project can relief the deloyment  of CloudView which is a virtualization man
 ├── coc
 │   └── deploy_on_coc.sh
 ├── cvm
-│   ├── after_coc_cvm.sh
-│   └── deploy_on_cvm.sh
-├── deploy.conf
+│   ├── deploy_on_cvm.sh
+│   └── prepare
 ├── hosts
 ├── hvn
 │   ├── hvn_after_reboot.sh
@@ -21,7 +20,7 @@ The project can relief the deloyment  of CloudView which is a virtualization man
 │   ├── create_cvm_and_coc.sh
 │   ├── master_hyper_after_reboot.sh
 │   └── master_hyper_before_reboot.sh
-├── reame.md
+├── readme.md
 ├── storage
 │   └── config_nfs.sh
 └── utility
@@ -31,14 +30,12 @@ The project can relief the deloyment  of CloudView which is a virtualization man
     ├── conf
     │   ├── libvirtd.conf
     │   └── xend-config.sxp
-    ├── cvm-hypervisor-install-2.1 -> ../cloudview/Supports/third-party_tools/cvm-hypervisor-install/cvm-hypervisor-install-2.1/
     └── nopasswd
         ├── cmd.exp
         ├── ecmd.sh
         ├── ssh.exp
         └── xmakessh
-
 11 directories, 20 files
 ```
 ## test version ##
-init 
+init  
