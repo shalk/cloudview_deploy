@@ -11,7 +11,7 @@ tmppath=`pwd`
 nodelist=`seq -f 'hvn%g' -s ','  1 $nodenum`
 cd ../utility/nopasswd/
 chmod a+x * 
-./makessh  --passwd  111111  --nodes  $nodelist 
+./xmakessh  --pass  111111  --nodes  $nodelist 
 cd $tmppath
 unset tmppath
 unset nodenum

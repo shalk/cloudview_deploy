@@ -24,26 +24,50 @@ eth_num=$1  # active network interface
 curtime=$2 # current time 
 
 # change time in the front 
-date -s $curtime
-hwdate -w
+echo change time
+date -s  "$curtime"
+hwclock -w
+echo change time finish 
 
 ip=`grep 'hvn1 ' ../hosts | awk '{print $1}' `     # current machine ip
 ########################################
 # copy hosts file
 #########################################
+echo change host
 cp -rf ../hosts  /etc/hosts
 currenthostname=`grep $ip /etc/hosts | awk '{print $2}'`
 echo $currenthostname > /etc/HOSTNAME
 hostname $currenthostname 
+echo change host finish
 ########################################
 # step1 change menulist
 ########################################
+echo change grub
 perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
 perl -p -i -e  " s/$/dom0_mem=8192M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
+echo change grub finish
+############################################
+# step 3 replace libvirt conf and xen conf 
+########################################
+echo libvirt and xen conf
+cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
+cp -rf  ../utility/conf/xend-config.sxp  /etc/xen/
+
+chkconfig libvirtd on
+chkconfig  xend on
+service libvirtd restart
+service xend restart 
+echo libvirt and xen conf finish
+########################################
+# step 4 time sync
+########################################
+chkconfig ntp on 
+service ntp start 
 
 ########################################
 # step 2   bridging 
 ########################################
+echo change bridgin
 cp -rf  /etc/sysconfig/network/ifcfg-$eth_num  ifcfg-${eth_num}.bak 
 cp -rf ../utility/bridge/ifcfg-br0   /etc/sysconfig/network/ 
 cp -rf ../utility/bridge/ifcfg-eth0   /etc/sysconfig/network/ifcfg-$eth_num  
@@ -56,18 +80,3 @@ unset ip
 unset eth_num
 
 ########################################
-# step 3 replace libvirt conf and xen conf 
-########################################
-
-cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
-cp -rf  ../utility/conf/xend-config.sxp  /etc/xend/
-
-chkconfig libvirtd on
-chkconfig  xend on
-service libvirtd restart
-service xend restart 
-########################################
-# step 4 time sync
-########################################
-chkconfig ntp on 
-service ntp start 
