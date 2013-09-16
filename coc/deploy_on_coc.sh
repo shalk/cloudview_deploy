@@ -48,6 +48,8 @@ hostname coc
 tmppath=`pwd`
 cd  ../cloudview/Supports/third-party_tools/installer_of_mysql/
 chmod a+x *
+./uninstall_mysql_linux.sh
+sleep 10
 ./install_mysql_linux.sh
 cd $tmppath
 
@@ -105,3 +107,6 @@ expect -c "
    "
 cd $tmppath
 
+sleep 30
+
+/etc/init.d/cloudview start
