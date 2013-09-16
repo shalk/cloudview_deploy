@@ -48,6 +48,8 @@ hostname cvm
 tmppath=`pwd`
 cd  ../cloudview/Supports/third-party_tools/installer_of_mysql/
 chmod a+x *
+./uninstall_mysql_linux.sh
+sleep 10
 ./install_mysql_linux.sh
 cd $tmppath
 
@@ -103,8 +105,13 @@ expect -c "
    "
 cd $tmppath
 
+sleep 30
 cd /opt/msp/collect_agent
 rm node_list
 perl -lane "print @F[0] if /hvn/ "  /etc/hosts > /opt/msp/collect_agent/node_list
 sh batch_install_collect_node.sh 
 cd $tmppath
+
+sleep 30
+
+/etc/init.d/cloudview start
