@@ -67,7 +67,8 @@ service ntp start
 ########################################
 # step 2   bridging 
 ########################################
-echo change bridgin
+echo "service network start" >> /etc/init.d/after.local
+echo change bridging
 cp -rf  /etc/sysconfig/network/ifcfg-$eth_num  ifcfg-${eth_num}.bak 
 cp -rf ../utility/bridge/ifcfg-br0   /etc/sysconfig/network/ 
 cp -rf ../utility/bridge/ifcfg-eth0   /etc/sysconfig/network/ifcfg-$eth_num  

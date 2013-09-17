@@ -42,7 +42,7 @@ perl -p -i -e  "s/dom0_mem=(\d+)M/dom0_mem=8192M/ " /boot/grub/menu.lst
 ########################################
 
 cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
-cp -rf  ../utility/conf/xend-config.sxp  /etc/xend/
+cp -rf  ../utility/conf/xend-config.sxp  /etc/xen/
 
 chkconfig libvirtd on
 chkconfig  xend on
@@ -51,6 +51,7 @@ service xend restart
 ########################################
 # step 3   bridging 
 ########################################
+echo "service network start" >>/etc/init.d/after.local
 cp -rf  /etc/sysconfig/network/ifcfg-$eth_num  ifcfg-${eth_num}.bak 
 cp -rf ../utility/bridge/ifcfg-br0   /etc/sysconfig/network/ 
 cp -rf ../utility/bridge/ifcfg-eth0   /etc/sysconfig/network/ifcfg-$eth_num  
