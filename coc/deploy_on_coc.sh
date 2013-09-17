@@ -1,6 +1,5 @@
 #!/bin/bash
-
-time_server_ip=`grep "hvn1 " ../hosts | awk '{print $1}' `
+time_server_ip=`perl -lane  "print if /hvn1$/ || /hvn1 / " ../hosts  | awk '{print $1}' `
 ###################
 # check network 
 ##################
