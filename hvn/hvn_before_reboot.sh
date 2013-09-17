@@ -34,10 +34,22 @@ unset currenthostname
 # step1 change menulist
 ########################################
 perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
-perl -p -i -e  " s/$/dom0_mem=8192M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
+perl -p -i -e  "s/$/dom0_mem=8192M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
+perl -p -i -e  "s/dom0_mem=(\d+)M/dom0_mem=8192M/ " /boot/grub/menu.lst
 
 ########################################
-# step 2   bridging 
+# step 2 replace libvirt conf and xen conf 
+########################################
+
+cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
+cp -rf  ../utility/conf/xend-config.sxp  /etc/xend/
+
+chkconfig libvirtd on
+chkconfig  xend on
+service libvirtd restart
+service xend restart 
+########################################
+# step 3   bridging 
 ########################################
 cp -rf  /etc/sysconfig/network/ifcfg-$eth_num  ifcfg-${eth_num}.bak 
 cp -rf ../utility/bridge/ifcfg-br0   /etc/sysconfig/network/ 
@@ -50,15 +62,4 @@ service network restart
 unset ip
 unset eth_num
 
-########################################
-# step 3 replace libvirt conf and xen conf 
-########################################
-
-cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
-cp -rf  ../utility/conf/xend-config.sxp  /etc/xend/
-
-chkconfig libvirtd on
-chkconfig  xend on
-service libvirtd restart
-service xend restart 
 
