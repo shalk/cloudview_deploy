@@ -113,4 +113,7 @@ cd $tmppath
 
 sleep 30
 
+/etc/init.d/cloudview status
 /etc/init.d/cloudview start
+/etc/init.d/tomcat status
+/etc/init.d/tomcat start
