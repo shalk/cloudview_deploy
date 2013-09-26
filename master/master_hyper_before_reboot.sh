@@ -10,8 +10,8 @@
 Usage(){
  echo "
 Usage:
- ./${0} eth[x] time  
- egg: ./$0 eth0 \"2007-08-03 14:15:00\"
+ ${0} eth[x] time  
+ egg: $0 eth0 \"2007-08-03 14:15:00\"
 "
 }
 if [   $# -ne 2  ] 

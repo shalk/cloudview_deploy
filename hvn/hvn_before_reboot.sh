@@ -10,8 +10,8 @@
 Usage(){
  echo "
 Usage:
- ./${0} eth[x] ip  
- egg: ./$0 eth0 \"10.0.23.11\"
+ ${0} eth[x] ip  
+ egg: $0 eth0 \"10.0.23.11\"
 "
 }
 if [   $# -ne 2  ] 
