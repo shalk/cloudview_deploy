@@ -10,8 +10,8 @@
 Usage(){
  echo "
 Usage:
- ${0} eth[x] time  
- egg: $0 eth0 \"2007-08-03 14:15:00\"
+ ${0} eth[x] ip 
+ egg: $0 eth0  10.0.23.61
 "
 }
 if [   $# -ne 2  ] 
@@ -21,15 +21,8 @@ then
 fi
 
 eth_num=$1  # active network interface
-curtime=$2 # current time 
+ip=$2     # current machine ip
 
-# change time in the front 
-echo change time
-date -s  "$curtime"
-hwclock -w
-echo change time finish 
-
-ip=`grep 'hvn1 ' ../hosts | awk '{print $1}' `     # current machine ip
 ########################################
 # copy hosts file
 #########################################
