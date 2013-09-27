@@ -1,0 +1,6 @@
+
+
+ssh localhost "
+date
+date
+"
