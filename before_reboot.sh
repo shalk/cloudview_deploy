@@ -32,7 +32,7 @@ if [[ -f  ip_map    ]]
 then 
    sed -i 's///g' ip_map 
    echo "127.0.0.1 localhost" > hosts  
-   awk  '{printf("%s   %s", $1,$2)}' ip_map >> hosts
+   awk  '{printf("%s   %s\n", $1,$2)}' ip_map >> hosts
 else
     echo please check ip_map  is exist
     exit 1
@@ -69,27 +69,30 @@ do
 	if [[ "X$name" == "Xhvn1" ]];then
         # bridging manage ip
 	    cd utility/
-       nohup sh   bridging.sh $business_ip  >../log/brdging.log    1<&2 & 
+	touch ../log/bridging.log
+        nohup sh   bridging.sh $business_ip  > ../log/bridging.log    2>&1 &  
         cd ..
         	
         #excute A1
         cd master
-	    nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  >../log/master_before.log   1<&2  &
-		cd ..
+	touch ../log/master_before.log
+	nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  > ../log/master_before.log   2>&1  &
+	cd ..
 		continue
 	fi            
 
 	#copy file	
-   	cd ..  
-    scp  -r   cloudview_deploy/     ${ip}:/root/  
-    cd cloudview_deploy
+        cd ..  
+        scp  -r   cloudview_deploy/     ${ip}:/root/  
+        cd cloudview_deploy
 
-    tmp_cmd="cd /root/cloudview_deploy/utility/; nohup sh   bridging.sh $business_ip  >../log/brdging.log    1<&2 & " 
+    tmp_cmd="cd /root/cloudview_deploy/utility/;touch ../log/bridging; nohup sh   bridging.sh $business_ip  >../log/bridging.log    2>&1 & " 
     ssh $ip $tmp_cmd 
     unset tmp_cmd 
     
   	#excute B1
-    tmp_cmd="cd /root/cloudview_deploy/hvn ; nohup  sh  hvn_before_reboot.sh  $manage_eth  $ip  > ../log/hvn_before.log  1<&2 & "
+    tmp_cmd="cd /root/cloudview_deploy/hvn ;touch ../log/hvn_before.log ;nohup  sh  hvn_before_reboot.sh  $manage_eth  $ip  > ../log/hvn_before.log  2>&1 & "
+
     ssh $ip  $tmp_cmd 
 	unset tmp_cmd
 #	echo $ip

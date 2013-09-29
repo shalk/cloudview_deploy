@@ -11,7 +11,8 @@ do
 	if [[ "X$name" == "Xhvn1" ]];then
         #excute A2
 		cd master
-		nohup sh master_hyper_after_reboot.sh   >../log/master_after.log   1<&2  &
+		touch ../log/master_after.log
+		nohup sh master_hyper_after_reboot.sh   > ../log/master_after.log   2>&1  &
 		cd ..
 		continue
 	fi            

@@ -23,7 +23,7 @@ fi
 ip=$2 # current machine ip
 eth_num=$1  # active network interface
 
-
+rm success_b1
 ###############################################3
 cp -rf ../hosts  /etc/hosts
 currenthostname=`grep $ip /etc/hosts | awk '{print $2}'`
@@ -64,3 +64,4 @@ unset ip
 unset eth_num
 
 
+touch success_b1

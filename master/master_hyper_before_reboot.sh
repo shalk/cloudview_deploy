@@ -22,7 +22,7 @@ fi
 
 eth_num=$1  # active network interface
 ip=$2     # current machine ip
-
+rm success_a1
 ########################################
 # copy hosts file
 #########################################
@@ -74,3 +74,4 @@ unset ip
 unset eth_num
 
 ########################################
+touch success_a1
