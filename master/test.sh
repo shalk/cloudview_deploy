@@ -1,6 +1,0 @@
-
-
-ssh localhost "
-date
-date
-"

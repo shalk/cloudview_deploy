@@ -58,15 +58,21 @@ name=''
 manage_eth="eth0"
 business_ip=''
 
-egrep  -v '^\s*#' ip_map |while  read ip  name manage_ip   
+egrep  -v '^\s*#' ip_map |while  read ip  name business_ip
 do
 	if [[ "X$name" == "Xlocalhost" ]];then
 		continue 
 	fi
+     
 	
 	if [[ "X$name" == "Xhvn1" ]];then
-		cd master
+        # bridging manage ip
+	    cd utility/
+        nohup sh   bridging.sh $business_ip  >../log/brdging.log    1<&2 & 
+        cd ..
+        	
         #excute A1
+        cd master
 		nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  >../log/master_before.log   1<&2  &
 		cd ..
 		continue
@@ -77,6 +83,10 @@ do
     scp  -r   cloudview_deploy/     ${ip}:/root/  
     cd cloudview_deploy
 
+    tmp_cmd="cd /root/cloudview_deploy/utility/; nohup sh   bridging.sh $business_ip  >../log/brdging.log    1<&2 & " 
+    ssh $ip $tmp_cmd 
+    unset tmp_cmd 
+    
   	#excute B1
     tmp_cmd="cd /root/cloudview_deploy/hvn ; nohup  sh  hvn_before_reboot.sh  $manage_eth  $ip  > ../log/hvn_before.log  1<&2 & "
     ssh $ip  $tmp_cmd 
