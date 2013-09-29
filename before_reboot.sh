@@ -7,6 +7,11 @@ Usage(){
 " 
     exit 1
 }
+checkfinish(){
+
+    echo 
+
+}
 if [[ $# != 1 ]]
 then
     Usage
@@ -58,22 +63,18 @@ name=''
 manage_eth="eth0"
 business_ip=''
 
-egrep  -v '^\s*#' ip_map |while  read ip  name business_ip
+egrep  -v '^\s*#' ip_map | grep hvn | while  read ip  name business_ip
 do
-	if [[ "X$name" == "Xlocalhost" ]];then
-		continue 
-	fi
      
-	
 	if [[ "X$name" == "Xhvn1" ]];then
         # bridging manage ip
 	    cd utility/
-        nohup sh   bridging.sh $business_ip  >../log/brdging.log    1<&2 & 
+       nohup sh   bridging.sh $business_ip  >../log/brdging.log    1<&2 & 
         cd ..
         	
         #excute A1
         cd master
-		nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  >../log/master_before.log   1<&2  &
+	    nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  >../log/master_before.log   1<&2  &
 		cd ..
 		continue
 	fi            
@@ -101,8 +102,3 @@ unset manage_eth
 checkfinish 
 
 
-checkfinish(){
-
-
-
-}

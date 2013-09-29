@@ -6,12 +6,8 @@ ip=''
 name=''
 business_ip=''
 
-egrep  -v '^\s*#' ip_map |while  read ip name  business_ip 
+egrep  -v '^\s*#' ip_map| grep hvn |while  read ip name  business_ip 
 do
-	if [[ "X$name" == "Xlocalhost" ]];then
-		continue 
-	fi
-	
 	if [[ "X$name" == "Xhvn1" ]];then
         #excute A2
 		cd master
