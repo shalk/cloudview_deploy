@@ -25,6 +25,8 @@ hwclock -w
 echo change time finish 
 unset curtime
 
+mkdir log
+
 ########################################
 #   handle hosts file 
 ######################################
