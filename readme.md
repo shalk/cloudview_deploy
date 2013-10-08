@@ -14,7 +14,7 @@ The project can relief the deloyment of CloudView which is a virtualization mana
 
 		cp  -rf  cloudview1.5.1.20130717    cloudview_deploy/cloudview
 
-将cvm.zip 解压到cloudview_deploy 同一级目录：
+将[cvm.zip](http://pan.baidu.com/s/1pBAso) 解压到cloudview_deploy 同一级目录：
 
 		[root@bogon test]# ls -lt
 		total 12
