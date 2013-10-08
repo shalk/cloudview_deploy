@@ -18,7 +18,7 @@ do
 	fi            
 
   	#excute B2
-    tmp_cmd="cd /root/cloudview_deploy/hvn; nohup  sh  hvn_after_reboot.sh   > ../log/hvn_after.log  1<&2 & "
+    tmp_cmd="cd /root/cloudview_deploy/hvn;touch ../log/${name}_after.log; nohup  sh  hvn_after_reboot.sh   > ../log/${name}_after.log  2>&1 & "
     ssh $ip  $tmp_cmd 
 	unset tmp_cmd
 #	echo $ip

@@ -71,15 +71,15 @@ do
 	if [[ "X$name" == "Xhvn1" ]];then
         # bridging manage ip
 	    cd utility/
-	touch ../log/bridging.log
+	    touch ../log/bridging.log
         nohup sh   bridging.sh $business_ip  > ../log/bridging.log    2>&1 &  
         cd ..
         	
         #excute A1
         cd master
-	touch ../log/master_before.log
-	nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  > ../log/master_before.log   2>&1  &
-	cd ..
+	    touch ../log/master_before.log
+	    nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  > ../log/master_before.log   2>&1  &
+	    cd ..
 		continue
 	fi            
 
