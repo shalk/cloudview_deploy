@@ -22,6 +22,7 @@ The project can relief the deloyment of CloudView which is a virtualization mana
 		-rw-r--r--.  1 root root    0 Sep 17 11:04 cvm.qcow2
 
 修改ip_map文件：
+
 		$ cat ip_map
 		# 管理网    主机名  业务网
 		10.0.23.61 hvn1  192.168.0.1       
