@@ -43,7 +43,7 @@ The project can relief the deloyment of CloudView which is a virtualization mana
 		total 12
 		drwxr-xr-x. 10 root root 4096 Oct  8 09:14 cloudview_deploy
 		-rw-r--r--.  1 root root    0 Sep 17 11:04 cvm.qcow2
-步骤2. 执行before_reboot.sh
+步骤2. 在主节点，执行before_reboot.sh
 		
 		$ cd cloudview_deploy/
 		$ sh before_reboot.sh  "2007-03-01 14:48:32"
@@ -53,11 +53,11 @@ The project can relief the deloyment of CloudView which is a virtualization mana
 		
 		$ reboot
 
-步骤4. 执行after_reboot.sh,等待2分钟。
+步骤4. 在主节点，执行after_reboot.sh,等待2分钟。
 	
 		
 		$ sh after_reboot.sh 
-步骤5. 创建coc 和cvm
+步骤5. 在主节点，创建coc 和cvm
 		
 		$ cd master
 		$ sh create_cvm_and_coc.sh
@@ -66,7 +66,8 @@ The project can relief the deloyment of CloudView which is a virtualization mana
 
 
 步骤7. 将cloudview_deploy 文件夹拷贝到cvm和coc的/root目录下。
-
+		$ scp -r  cloudview_deploy  cvm:/root
+		$ scp -r  cloudview_deploy  coc:/root
 步骤8. 在cvm上执行：
 	   
 		$ cd cvm
