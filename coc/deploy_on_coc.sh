@@ -74,7 +74,7 @@ expect -c "
 "
 
 
-mspsp=`ls | grep sp5`
+mspsp=`ls | grep sp[0-9]`
 
 expect -c "
     set timeout 60;
