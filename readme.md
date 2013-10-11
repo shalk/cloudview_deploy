@@ -66,8 +66,10 @@ The project can relief the deloyment of CloudView which is a virtualization mana
 
 
 步骤7. 将cloudview_deploy 文件夹拷贝到cvm和coc的/root目录下。
+
 		$ scp -r  cloudview_deploy  cvm:/root
 		$ scp -r  cloudview_deploy  coc:/root
+		
 步骤8. 在cvm上执行：
 	   
 		$ cd cvm
