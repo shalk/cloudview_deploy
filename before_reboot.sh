@@ -93,7 +93,7 @@ do
     unset tmp_cmd 
     
   	#excute B1
-    tmp_cmd="cd /root/cloudview_deploy/hvn ;touch ../log/hvn_before.log ;nohup  sh  hvn_before_reboot.sh  $manage_eth  $ip  > ../log/hvn_before.log  2>&1 & "
+    tmp_cmd="cd /root/cloudview_deploy/hvn ;touch ../log/${name}_before.log ;nohup  sh  hvn_before_reboot.sh  $manage_eth  $ip  > ../log/${name}_before.log  2>&1 & "
 
     ssh $ip  $tmp_cmd 
 	unset tmp_cmd

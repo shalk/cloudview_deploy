@@ -43,6 +43,19 @@ sntp -P no -r $time_server_ip
 cp -rf ../hosts  /etc/hosts
 echo cvm > /etc/HOSTNAME
 hostname cvm 
+########################################
+# change vm xml 
+########################################
+ 
+perl -p -i -e 's/br0/br1/g' ../cloudview/Supports/cvm_config/xen_create_template_xml_file/* 
+perl -p -i -e 's/br0/br1/g' ../cloudview/Supports/cvm_config/xen_template_xml_file/* 
+mkdir -p /dsx01/iso
+mkdir -p /dsx01/img
+mkdir -p /dsx01/cfg
+cp -rf ../cloudview/Supports/cvm_config/xen_create_template_xml_file/* /dsx01/cfg
+cp -rf ../cloudview/Supports/cvm_config/xen_template_xml_file/* /dsx01/cfg
+
+########################################
 
 tmppath=`pwd`
 cd  ../cloudview/Supports/third-party_tools/installer_of_mysql/
