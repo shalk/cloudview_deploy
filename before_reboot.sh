@@ -32,7 +32,8 @@ mkdir log
 ######################################
 if [[ -f  ip_map    ]]
 then 
-   sed -i 's///g' ip_map 
+   sed -i 's/
+//g' ip_map 
    echo "127.0.0.1 localhost" > hosts  
    awk  '{printf("%s   %s\n", $1,$2)}' ip_map >> hosts
 else
@@ -44,6 +45,7 @@ fi
 ########################################
 # no_passwd 
 ########################################
+cp -rf hosts  /etc/  
 nodenum=`grep hvn ./hosts | wc -l  | awk '{print $1}'` # 
 tmppath=`pwd`
 nodelist=`seq -f 'hvn%g' -s ','  1 $nodenum`
