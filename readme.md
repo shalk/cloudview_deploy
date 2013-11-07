@@ -1,6 +1,6 @@
 #Deploy_CloudView#
 
-The project can relief the deloyment of CloudView which is a virtualization management software.
+The project can relief the deployment of CloudView which is a virtualization management software.
 
 安装准备
 =============
