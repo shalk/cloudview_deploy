@@ -67,9 +67,12 @@ name=''
 manage_eth="eth0"
 business_ip=''
 
-egrep  -v '^\s*#' ip_map | grep hvn | while  read ip  name business_ip
+
+for  line  in `egrep  -v '^\s*#' ip_map | grep hvn | sed  -e 's/  / /g'  -e 's/ /:/g'`
 do
-     
+     ip=`echo $line | awk -F: '{print $1}'`
+     name=`echo $line | awk -F: '{print $2}'`
+     business_ip=`echo $line | awk -F: '{print $3}'`
 	if [[ "X$name" == "Xhvn1" ]];then
         # bridging manage ip
 	    cd utility/
