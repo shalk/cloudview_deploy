@@ -37,14 +37,14 @@ echo change host finish
 ########################################
 echo change grub
 perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
-perl -p -i -e  " s/$/dom0_mem=8192M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
+perl -p -i -e  " s/$/dom0_mem=4096M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
 echo change grub finish
 ############################################
 # step 3 replace libvirt conf and xen conf 
 ########################################
-echo libvirt and xen conf
-cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
-cp -rf  ../utility/conf/xend-config.sxp  /etc/xen/
+#echo libvirt and xen conf
+#cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
+#cp -rf  ../utility/conf/xend-config.sxp  /etc/xen/
 
 chkconfig libvirtd on
 chkconfig  xend on

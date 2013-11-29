@@ -34,15 +34,15 @@ unset currenthostname
 # step1 change menulist
 ########################################
 perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
-perl -p -i -e  "s/$/dom0_mem=8192M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
-perl -p -i -e  "s/dom0_mem=(\d+)M/dom0_mem=8192M/ " /boot/grub/menu.lst
+perl -p -i -e  "s/$/dom0_mem=4096M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
+perl -p -i -e  "s/dom0_mem=(\d+)M/dom0_mem=4096M/ " /boot/grub/menu.lst
 
 ########################################
 # step 2 replace libvirt conf and xen conf 
 ########################################
 
-cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
-cp -rf  ../utility/conf/xend-config.sxp  /etc/xen/
+#cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
+#cp -rf  ../utility/conf/xend-config.sxp  /etc/xen/
 
 chkconfig libvirtd on
 chkconfig  xend on
