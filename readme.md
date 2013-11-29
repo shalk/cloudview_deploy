@@ -57,29 +57,16 @@ The project can relief the deployment of CloudView which is a virtualization man
 	
 		
 		$ sh after_reboot.sh 
-步骤5. 在主节点，创建coc 和cvm
+步骤5. 在主节点，创建cvm
 		
 		$ cd master
-		$ sh create_cvm_and_coc.sh
+		$ sh create_cvm.sh
 
-步骤6. 在图形化界面下配置cvm和coc的IP，使得网络通畅。
-
-
-步骤7. 将cloudview_deploy 文件夹拷贝到cvm和coc的/root目录下。
-
-		$ scp -r  cloudview_deploy  cvm:/root
-		$ scp -r  cloudview_deploy  coc:/root
+步骤6. 在主节点，创建coc
 		
-步骤8. 在cvm上执行：
-	   
-		$ cd cvm
-		$ sh deploy_on_cvm.sh
-	  
-同时，  在coc上执行：
+ 		$ cd  master
+        $ sh  create_coc.sh      
 
-		$ cd coc
-		$ sh deploy_on_coc.sh
-      
-
+注：步骤5和步骤6 可开两个窗口 同时进行。
 END
 =====
