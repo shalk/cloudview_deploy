@@ -18,9 +18,9 @@ TEMPLATE_NAME=${1:-cvm_test}
 # prepare   xml  and  img  of   virtual machine 
 XML_NAME="/cloudview/${TEMPLATE_NAME}/${TEMPLATE_NAME}.xml"
 mkdir -p /cloudview/$TEMPLATE_NAME
-cp cvm_template.xml $XML_NAME 
+cp ../utility/conf/cvm_template.xml $XML_NAME 
 IMG_PATH="/cloudview/${TEMPLATE_NAME}/${TEMPLATE_NAME}.raw"
-qemu-img convert -f qcow2  /cloudview/cvm_serial.qcow2  -O raw  $IMG_PATH
+qemu-img convert -f qcow2  ../../cvm_template.qcow2  -O raw  $IMG_PATH
 
 echo  'img convert finish '
 
