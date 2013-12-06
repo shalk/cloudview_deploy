@@ -100,4 +100,4 @@ ssh $TEMPIP  "service network restart "
 ssh $TEMPIP "service cloudview start "
 ssh $TEMPIP "service tomcat start "
 
-echoG "VM  $TEMPLATE_NAME  FINISH "
+echo "VM  $TEMPLATE_NAME  FINISH "
