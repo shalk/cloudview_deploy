@@ -50,8 +50,8 @@ sleep 30
 echo  "$TEMPLATE_NAME  start  finish "
 
 ########echo finish
-TEMPIP="10.0.50.231"
-GATEWAY="10.0.50.254"
+#TEMPIP="10.0.50.231"
+#GATEWAY="10.0.50.254"
 TEMPGW="default $GATEWAY - -"
 expect -c "
     set timeout 10
