@@ -1,0 +1,85 @@
+package shellrun;
+use strict;
+use IPC::Open3;
+use IO::Select;
+use Symbol;
+
+sub new (){
+  my $class = shift;
+  my ($cmd , $infile,$outfile,$errfile)  = @_;
+}
+
+my $cmd = "./2.sh";
+open(ERRLOG, ">error.log") or die "Can't open error log! $!";
+open(OUTPUT, ">output.log") or die "Can't open output log! $!";
+
+my ($infh,$outfh,$errfh);
+$errfh = gensym(); # if you uncomment this line, $errfh will
+                   # never be initialized for you and you
+                   # will get a warning in the next print
+                   # line.
+my $pid;
+eval{
+   $pid = open3($infh, $outfh, $errfh, $cmd);
+};
+die $@ if $@;
+
+print "IN: $infh     OUT: $outfh     ERR: $errfh\n";
+print "PID was $pid\n";
+
+# now our child is running, happily printing to 
+# its stdout and stderr (our $outfh and $errfh).
+
+my $sel = new IO::Select; # create a select object
+$sel->add($outfh,$errfh); # and add the fhs
+
+# $sel->can_read will block until there is data available
+# on one or more fhs
+while(my @ready = $sel->can_read) {
+    # now we have a list of all fhs that we can read from
+    foreach my $fh (@ready) { # loop through them
+        my $line;
+        # read up to 4096 bytes from this fh.
+        # if there is less than 4096 bytes, we'll only get
+        # those available bytes and won't block.  If there 
+        # is more than 4096 bytes, we'll only read 4096 and
+        # wait for the next iteration through the loop to 
+        # read the rest.
+        my $len = sysread $fh, $line, 4096;
+        if(not defined $len){
+            # There was an error reading
+            die "Error from child: $!\n";
+        } elsif ($len == 0){
+            # Finished reading from this FH because we read
+            # 0 bytes.  Remove this handle from $sel.  
+            # we will exit the loop once we remove all file
+            # handles ($outfh and $errfh).
+            $sel->remove($fh);
+            next;
+        } else { # we read data alright
+            print "Read $len bytes from $fh\n";
+            if($fh == $outfh) {
+                print OUTPUT $line;
+            } elsif($fh == $errfh) {
+                print ERRLOG $line;
+            } else {
+                die "Shouldn't be here\n";
+            }
+        }
+    }
+}
+
+# now that the child closed both its handles, I assume it 
+# exited.
+# ps will show you the <defunct> child.
+print `ps`;
+
+# go ahead and reap it
+waitpid $pid, 0; # wait for it to die
+
+# not it's no more
+print `ps`;
+
+close(ERRLOG) or die "Can't close filehandle! $!";
+close(OUTPUT) or die "Can't close filehandle! $!";
+ 
