@@ -1,0 +1,233 @@
+#!/usr/bin/env perl
+use strict;
+use Data::Dumper;
+#use lib './lib';
+#use ShellRun ;
+####################
+#
+our $debug= 1;
+our %hvn_info ; 
+our %master_info ;
+our %cvm_info  ;
+our %coc_info  ;
+
+sub no_passwd {
+   # my $passwd =  "111111";
+    my @nodelist=  @_;
+    my $node= join "," ,@nodelist;
+    my $cmd = "cd utility/nopasswd/; ./xmakessh --pass 111111 --nodes  $node ; cd ../../ ";
+    &exe( $cmd); 
+}
+
+sub menu_lst{
+    my $mem =  shift || 4096; 
+    my $cmd =  "utility/menu_lst/menu_list.sh $mem ";
+    &exe($cmd);
+}    
+
+sub time_sync_server{
+    my $date = shift || "2013-12-12 12:00:00";
+    my $cmd = "utility/time_sync/ntp_server.sh $date";
+    &exe($cmd);
+} 
+sub time_sync_client{
+    my $server_ip = shift;
+    my $cmd = "utility/time_sync/ntp_client.sh $server_ip"   ;
+    &exe($cmd);
+}
+
+sub hostname{
+    my $name = shift;
+    my $cmd = "utility/hostname/hostname.sh  $name;  cp  -rf hosts /etc/hosts ";
+    &exe($cmd);
+} 
+
+sub bridge{
+    my $ip  = shift;
+    my $eth = shift;
+    my $br = shift;
+    my $cmd="utility/bridge/bridging.sh $ip  $eth $br  ";
+    &exe($cmd);
+}
+sub hyper_install{
+    my  $cmd = "cd cloudview/Support/Supports/third-party_tools/cvm-hypervisor-install/cvm-hypervisor-install-3.0; sh install ;"     ;
+    &exe($cmd);
+}
+
+sub ssh_config{
+    my $cmd = "utility/ssh_config/no_enter_passwd.sh ";
+    &exe($cmd);
+}
+
+sub virtual_service_on{
+    my $cmd = "chkconfig xend on; chkconfig libvirtd on ;";
+    $cmd .= "service xend start; service libvirtd start;";
+    &exe($cmd);
+}
+sub exe {
+    my $cmd = shift;
+    if($debug){
+      print "$cmd \n";
+    }else{
+      system($cmd);
+ #   my $res = ShellRun::excute($cmd,undef, "&<STDIN",">&STDOUT");
+ #   return $res;
+    }
+}
+sub universe {
+    my $ip1 = shift;
+    my $hostname = $hvn_info{$_}{"hostname"};
+    my $ip2 =  $hvn_info{$_}{"ip2"};
+    &ssh_config();
+    &virtual_service_on();
+    &hostname( $hostname); 
+    &menu_lst(); 
+    &bridge(   $ip1,
+               "eth0",
+               "br0"
+               );
+    &bridge(   $ip2,
+               "eth1",
+               "br1"
+               ) if $ip2;
+}
+
+sub hvn {
+    my $ip = shift;
+    my $master_ip = &get_master_ip; 
+    &universe($ip);
+    &time_sync_client($master_ip);
+    &hyper_install();
+}
+
+sub batch_hvn {
+    foreach my $remote_ip (keys %hvn_info){
+    my  $remote_command = "cd /root/cloudview_deploy/; install hvn";
+    my $cmd =  "ssh $remote_ip  \"$remote_command \" "    ;
+    &exe($cmd);
+    }
+}
+
+sub send_tool{
+    my $ip  = shift;
+    my $cmd = "scp -r ../cloudview_deploy/  $ip:/root/"; 
+    &exe($cmd);
+}
+sub log_info {
+    my @info = @_;
+    print "[INFO] " ,@info,"\n";   
+}
+sub get_nodelist{
+    my @ip= keys %hvn_info;
+    push @ip,&get_master_ip;
+    return @ip;
+}
+sub get_master_ip{
+    my @ip =  keys %master_info;
+    return $ip[0];
+}
+sub get_cvm_ip{
+    my @ip =  keys %cvm_info;
+    return $ip[0];
+}
+
+sub analyze_ip_map{
+    open FH , "< ip_map" or die "can not find ip_map";
+    system ("touch hosts");
+    open FH1, "> hosts" or die "can not open hosts";
+    print FH1 "127.0.0.1 localhost\n";
+    while(<FH>){
+      s/^\s*//;
+      s/\s*$//;
+      s/\s+/ /g;
+      my ($ip1,$name,$ip2) = split / /;
+      if ($name eq 'hvn1')  
+      {
+       $master_info{$ip1}= {
+          hostname => $name,
+          ip2      => $ip2
+        }; 
+        
+      } elsif($name eq 'cvm'){
+    
+       $cvm_info{$ip1}= {
+          hostname => $name,
+          ip2      => $ip2
+        }; 
+        
+       } elsif ($name =~ 'coc'){
+       $coc_info{$ip1}= {
+          hostname => $name,
+          ip2      => $ip2
+        }; 
+        
+        } elsif ($name =~ /hvn/)
+       {
+       $hvn_info{$ip1}= {
+          hostname => $name,
+          ip2      => $ip2
+        }; 
+       } else{
+        print "[ERROR] $ip1  $name  $ip2 \n"; 
+        die "die  in [analyze_ip_map]";
+       }
+        print FH1 "$ip1  $name\n";
+    }
+    close FH;
+    close FH1;
+}
+sub config_business_br{
+    my $cmd = "utility/other/config_business_br.sh "."br0";
+    &exe($cmd);
+}
+
+
+sub master{
+    my @nodelist= &get_nodelist; 
+   # my $master_ip = &get_master_ip; 
+    log_info( "generate hosts  ==========");
+    &exe("cat hosts");
+    log_info( "generate hosts  ==========\n");
+   
+    log_info("no_passwd ==========");
+    &no_passwd(@nodelist);
+    log_info("no_passwd ==========\n");
+
+    log_info("send_tool ==========");
+    foreach(keys %hvn_info){
+    &send_tool($_);
+    }
+    log_info("send_tool ==========\n");
+    
+    log_info("start ntp  server  ==========");
+    &time_sync_server();
+    log_info("start ntp server  ==========\n");
+
+   
+    log_info("universe_install ===="); 
+    &universe(&get_master_ip);
+    log_info("universe_install ====\n"); 
+    
+    log_info("hyper_install ====\n"); 
+    &hyper_install();
+    log_info("hyper_install ======"); 
+}
+
+&analyze_ip_map;
+
+if  ( @ARGV ){ 
+   my $type = $ARGV[0];          
+    if ( $type eq 'hvn') {
+      &hvn ;
+    }elsif ($type eq 'cvm'){
+      &cvm ; 
+    }elsif($type eq 'batch_hvn')
+    {
+     &batch_hvn; 
+    }
+}else{
+&master;
+}
+
+
+
