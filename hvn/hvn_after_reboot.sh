@@ -14,7 +14,7 @@ sntp -P no -r $time_server_ip
 
 tmppath=`pwd`
 echo 'configure each hypervisor '
-cd ../cloudview/Supports/third-party_tools/cvm-hypervisor-install/cvm-hypervisor-install-2.1/
+cd ../cloudview/Supports/third-party_tools/cvm-hypervisor-install/cvm-hypervisor-install-*/
 chmod a+x install 
 ./install 
 ########################################
