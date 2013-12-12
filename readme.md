@@ -5,21 +5,21 @@ The project can relief the deployment of CloudView which is a virtualization man
 安装准备
 =============
 
-下载本项目[代码](https://github.com/shalk/cloudview_deploy/archive/master.zip) 
+下载本项目相应分支[代码](https://github.com/shalk/cloudview_deploy/archive/1.5.2.zip)  并解压 
+重名名文件夹为 cloudview_deploy
 
-		$ unzip  master.zip
-		$ mv   cloudview_deploy-master  cloudview_deploy
+		$ mv   cloudview_deploy-分支名  cloudview_deploy
 
 将cloudview 安装包放入cloudview_deploy 文件夹内,删除末尾的版本号
 
-		$ cp  -rf  cloudview1.5.1.20130717    cloudview_deploy/cloudview
+		$ cp  -rf  cloudview1.5.2.20131202   cloudview_deploy/cloudview
 
-将[cvm.zip](http://pan.baidu.com/s/1pBAso) 解压到cloudview_deploy 同一级目录：
+将[cvm_template.zip](http://pan.baidu.com/s/13oPlu) 解压到cloudview_deploy 同一级目录：
 
 		$ ls -lt
 		total 12
 		drwxr-xr-x. 10 root root 4096 Oct  8 09:14 cloudview_deploy
-		-rw-r--r--.  1 root root    0 Sep 17 11:04 cvm.qcow2
+		-rw-r--r--.  1 root root    0 Sep 17 11:04 cvm_template.qcow2
 
 修改ip_map文件：
 
@@ -43,10 +43,10 @@ The project can relief the deployment of CloudView which is a virtualization man
 		total 12
 		drwxr-xr-x. 10 root root 4096 Oct  8 09:14 cloudview_deploy
 		-rw-r--r--.  1 root root    0 Sep 17 11:04 cvm.qcow2
-步骤2. 在主节点，执行before_reboot.sh
+步骤2. 在主节点，执行install.sh
 		
 		$ cd cloudview_deploy/
-		$ sh before_reboot.sh  "2007-03-01 14:48:32"
+		$ sh install  "2013-12-12 12:48:32"
         #等待2分钟，执行成功。
 
 步骤3. 重启所有节点
@@ -62,11 +62,6 @@ The project can relief the deployment of CloudView which is a virtualization man
 		$ cd master
 		$ sh create_cvm.sh
 
-步骤6. 在主节点，创建coc
-		
- 		$ cd  master
-        $ sh  create_coc.sh      
 
-注：步骤5和步骤6 可开两个窗口 同时进行。
 END
 =====
