@@ -8,6 +8,10 @@ TEMP_NETMASK='255.255.255.0'
 
 mkdir -p $cvmcocpath 
 cd ../utility/
+echo "########################################"
+echo "create cvm     "
+echo " $CVM_IP $TEMP_NETMASK  $TEMP_GATEWAY  "
+echo "########################################"
 sh create_vm_from_template.sh cvm  $CVM_IP $TEMP_NETMASK  $TEMP_GATEWAY  
 
 

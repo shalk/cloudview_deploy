@@ -87,16 +87,16 @@ expect -c "
 "
 
 
-mspsp=`ls | grep sp[0-9]`
-
-expect -c "
-    set timeout 60;
-    spawn  ./$mspsp -c;
-    expect {
-        \"Please select a language:\" {send \"\r\"; exp_continue}
-        \"This will install MSP Service Pack on your computer\" {send \"\r\"; exp_continue}
-    }
-"
+#mspsp=`ls | grep sp[0-9]`
+#
+#expect -c "
+#    set timeout 60;
+#    spawn  ./$mspsp -c;
+#    expect {
+#        \"Please select a language:\" {send \"\r\"; exp_continue}
+#        \"This will install MSP Service Pack on your computer\" {send \"\r\"; exp_continue}
+#    }
+#"
 cd $tmppath
 
 cd ../cloudview/CVM/
@@ -109,7 +109,7 @@ expect -c "
    spawn ./$cvmsh -c;
    expect {
        \"Please select a language:\" {send \"\r\"; exp_continue}
-       \"This will install Sugon CloudviewVirtualManager on your computer.\" {send \"\r\"; exp_continue}
+       \"This will install Sugon\" {send \"\r\"; exp_continue}
        \"InitData\" {send \"\r\"; exp_continue}
        \"VirtualDirectoryConfiguration\" {send \"\r\"; exp_continue}
        \"Please select hypervisor type\" {send \"1\r\"; exp_continue}
