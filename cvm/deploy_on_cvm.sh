@@ -58,7 +58,7 @@ mkdir -p /dsx01/cfg
 ########################################
 
 tmppath=`pwd`
-cd  ../cloudview/Supports/third-party_tools/installer_of_mysql/
+cd  ../cloudview/Supports/third-party_tools/installer_of_mysql_for_sles11_sp2
 chmod a+x *
 ./uninstall_mysql_linux.sh
 sleep 10
@@ -79,7 +79,7 @@ expect -c "
        \"Where should Sugon Management Software Core Platform be installed?\" {send \"\r\"; exp_continue}
        \"Which components should be installed?\" {send \"\r\"; exp_continue}
        \"Remote Server: Yes?\" {send \"n\r\"; exp_continue}
-       \"MySQL Home\" {send \"\r\"; exp_continue}
+       \"MySQL Home\" {send \"/usr\r\"; exp_continue}
        \"MySQL Port\" {send \"\r\"; exp_continue}
        \"MySQL Root's Password\" {send \"root123\r\"; exp_continue}
        \"Please input Server's Manage IP\" {send \"\r\"; exp_continue}
@@ -129,4 +129,6 @@ sleep 30
 /etc/init.d/cloudview status
 /etc/init.d/cloudview start
 /etc/init.d/tomcat status
+/etc/init.d/tomcat start
+sleep 10
 /etc/init.d/tomcat start

@@ -45,7 +45,7 @@ perl -p -i -e   "s!UUID_NAME!$UUID_NAME!" $XML_NAME
 virsh define  $XML_NAME
 sleep 5
 xm start $TEMPLATE_NAME
-sleep 60
+sleep 80
 
 echo  "$TEMPLATE_NAME  start  finish "
 

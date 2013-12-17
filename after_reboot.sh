@@ -30,7 +30,7 @@ done
      echo "# master  install hypervisor "
 cd master
 touch ../log/master_after.log
-sh master_hyper_after_reboot.sh  | tee ../log/master_after.log     
+sh master_hyper_after_reboot.sh    
 cd ..
      echo "########################################"
 
