@@ -39,7 +39,21 @@ else
     echo please check ip_map  is exist
     exit 1
 fi
+########################################
+#  extract  Support
+###################################
+tmppath=`pwd`
+cd cloudview/Supports 
+for i  in `ls *.gz`
+do
+    gzip -d $i
+done
+for i  in `ls *.tar`
+do
+    tar -xvf  $i
+done
 
+cd $tmppath
 
 ########################################
 # no_passwd 
