@@ -61,7 +61,7 @@ cd $tmppath
 cp -rf hosts  /etc/  
 nodenum=`grep hvn ./hosts | wc -l  | awk '{print $1}'` # 
 tmppath=`pwd`
-nodelist=`seq -f 'hvn%g' -s ','  1 $nodenum`
+nodelist=`awk '{print $1 }' ip_map | perl -lane  ' push @a,$_ ;END{print join ",",@a }'`
 tmppasswd='111111'
 cd ./utility/nopasswd/
 chmod a+x * 
