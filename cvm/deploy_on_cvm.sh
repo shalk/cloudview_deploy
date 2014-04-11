@@ -58,11 +58,11 @@ mkdir -p /dsx01/cfg
 ########################################
 
 tmppath=`pwd`
-cd  ../cloudview/Supports/third-party_tools/installer_of_mysql_for_sles11_sp2
+cd  ../cloudview/Supports/third-party_tools/installer*/
 chmod a+x *
-./uninstall_mysql_linux.sh
+./uninstall*
 sleep 10
-./install_mysql_linux.sh
+./install*
 cd $tmppath
 
 cd ../cloudview/MSP
