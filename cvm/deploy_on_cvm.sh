@@ -79,7 +79,7 @@ expect -c "
        \"Where should Sugon Management Software Core Platform be installed?\" {send \"\r\"; exp_continue}
        \"Which components should be installed?\" {send \"\r\"; exp_continue}
        \"Remote Server: Yes?\" {send \"n\r\"; exp_continue}
-       \"MySQL Home\" {send \"/usr\r\"; exp_continue}
+       \"MySQL Home\" {send \"\r\"; exp_continue}
        \"MySQL Port\" {send \"\r\"; exp_continue}
        \"MySQL Root's Password\" {send \"root123\r\"; exp_continue}
        \"Please input Server's Manage IP\" {send \"\r\"; exp_continue}
