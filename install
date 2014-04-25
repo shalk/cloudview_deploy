@@ -1,15 +1,34 @@
 #!/usr/bin/env perl
 use strict;
-use Data::Dumper;
+#use Data::Dumper;
 #use lib './lib';
 #use ShellRun ;
-####################
+############
 #
 our $debug= 1;
 our %hvn_info ; 
 our %master_info ;
 our %cvm_info  ;
 our %coc_info  ;
+
+
+sub usage {
+    
+print """
+Usage:
+  sh  install [Option] 
+Option:
+no_passwd
+menu_lst
+time_sync
+hostname
+bridge
+hyper_install
+ssh_config
+""";
+
+
+}
 
 sub no_passwd {
    # my $passwd =  "111111";
