@@ -1,5 +1,0 @@
-
- Flow
-1. make sure that  the cvm 's network ok
-2. copy all the the project on the cvm
-3. excute  deploy_on_cvm.sh

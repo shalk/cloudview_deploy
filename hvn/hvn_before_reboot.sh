@@ -11,7 +11,7 @@ Usage(){
  echo "
 Usage:
  ${0} eth[x] ip  
- egg: $0 eth0 \"10.0.23.11\"
+ egg: $0 eth1 \"10.0.23.11\"
 "
 }
 if [   $# -ne 2  ] 
@@ -46,20 +46,25 @@ perl -p -i -e  "s/dom0_mem=(\d+)M/dom0_mem=4096M/ " /boot/grub/menu.lst
 
 chkconfig libvirtd on
 chkconfig  xend on
-service libvirtd restart
-service xend restart 
+service libvirtd start
+service xend start 
+##########################################
+# time sync rely on  ntp service  and after.local 
+###############################################
+time_server_ip=`perl -lane  "print if /hvn1$/ || /hvn1 / " ../hosts  | awk '{print $1}' `
+echo "server $time_server_ip prefer" >> /etc/ntp.conf
+echo "sntp -P no -r $time_server_ip" >> /etc/rc.d/after.local
+sntp -P no -r $time_server_ip
+chkconfig ntp on
+service ntp start 
+
 ########################################
 # step 3   bridging 
 ########################################
 echo "service network start" >>/etc/init.d/after.local
-cp -rf  /etc/sysconfig/network/ifcfg-$eth_num  ifcfg-${eth_num}.bak 
-cp -rf ../utility/bridge/ifcfg-br0   /etc/sysconfig/network/ 
-cp -rf ../utility/bridge/ifcfg-eth0   /etc/sysconfig/network/ifcfg-$eth_num  
-perl -p -i -e "s/eth./${eth_num}/" /etc/sysconfig/network/ifcfg-br0
-perl -p -i -e "s/^IPADDR.*$/IPADDR=\'${ip}\/24\'/"  /etc/sysconfig/network/ifcfg-br0
-chkconfig NetworkManage off
-service NetworkManage stop
-service network restart 
+
+sh ../utility/bridging.sh $ip $eth_num  br1  16
+
 unset ip
 unset eth_num
 

@@ -45,8 +45,8 @@ service ntp start
 
 
 cp -rf ../hosts  /etc/hosts
-echo cvm > /etc/HOSTNAME
-hostname cvm 
+echo coc > /etc/HOSTNAME
+hostname coc 
 ########################################
 # change vm xml 
 ########################################
@@ -86,31 +86,28 @@ expect -c "
 
 cd $tmppath
 
-cd ../cloudview*/CVM/
+cd ../cloudview/COC/
 chmod a+x *
 
-cvmsh=`ls | grep cvm`
+cocsh=`ls | grep coc` 
 
 expect -c "
    set timeout 60;
-   spawn ./$cvmsh -c;
-   expect {
-       \"Please select a language:\" {send \"\r\"; exp_continue}
-       \"This will install Sugon\" {send \"\r\"; exp_continue}
-       \"InitData\" {send \"\r\"; exp_continue}
-       \"VirtualDirectoryConfiguration\" {send \"\r\"; exp_continue}
-       \"Please select hypervisor type\" {send \"1\r\"; exp_continue}
-   }
+   spawn ./$cocsh -c;
+       expect {
+        \"Please select a language:\" {send \"\r\"; exp_continue}
+        \"This will install CloudviewOperationCenter on your computer\" {send \"\r\"; exp_continue}
+        \"InitData\" {send \"\r\"; exp_continue}
+        \"StorageManagementConfiguration\" {send \"\r\"; exp_continue}
+        \"Please input Storage's Port\" {send \"\r\"; exp_continue}
+        \"VirtualDirectoryConfiguration\" {send \"\r\"; exp_continue}
+        \"Please select hypervisor type\" {send \"1\r\"; exp_continue}
+    }
    "
+
 cd $tmppath
 
 
-sleep 30
-cd /opt/msp/collect_agent
-rm node_list
-perl -lane "print @F[0] if /hvn/ "  /etc/hosts > /opt/msp/collect_agent/node_list
-sh batch_install_collect_node.sh 
-cd $tmppath
 
 sleep 30
 
@@ -122,12 +119,12 @@ sleep 10
 /etc/init.d/tomcat start
 
 
-MANAGE_IP=`grep cvm /etc/hosts | awk '{print $1 }'`
-MANAGE_MAC= `head -n 1 ../utility/create_vm/cvm_mac `
+MANAGE_IP=`grep coc /etc/hosts | awk '{print $1 }'`
+MANAGE_MAC= `head -n 1 ../utility/create_vm/coc_mac `
 MANAGE_ETH=`ifconfig -a | grep $MANAGE_MAC | awk '{print $1}'`
 
-BUSSINESS_IP=`grep cvm ip_map | awk '{print $3}'   `
-BUSSINESS_MAC= `head -n 1 ../utility/create_vm/cvm_mac `
+BUSSINESS_IP=`grep coc ip_map | awk '{print $3}'   `
+BUSSINESS_MAC= `head -n 1 ../utility/create_vm/coc_mac `
 BUSSINESS_ETH=`ifconfig -a | grep $BUSSINESS_MAC | awk '{print $1}'`
 BUSSINESS_MASK=24
 

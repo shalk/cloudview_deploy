@@ -3,7 +3,7 @@ Usage(){
 #before 
  echo "Usage:
      $0   time
- egg: $0  \"2007-08-03 14:15:00\"
+ egg: $0  \"2013-09-18 14:15:00\"
 " 
     exit 1
 }
@@ -21,11 +21,23 @@ curtime=$1
 # change time in the front 
 echo change time
 date -s  "$curtime"
+if [[ $? != 0 ]]
+then
+    echo "$curtime is not correct Time Format"
+    Usage
+fi
 hwclock -w
 echo change time finish 
 unset curtime
 
 mkdir log
+# cloudview media rename
+mv cloudview*  cloudview
+if [[ $? != 0 ]]
+then
+    echo "Make sure cloudview software  is in ( cloudview_deploy ) directory !"
+    exit 1
+fi
 
 ########################################
 #   handle hosts file 
@@ -39,6 +51,8 @@ else
     echo please check ip_map  is exist
     exit 1
 fi
+cp -rf /etc/hosts  /etc/hosts.bak
+cp -rf hosts  /etc/  
 ########################################
 #  extract  Support
 ###################################
@@ -58,7 +72,6 @@ cd $tmppath
 ########################################
 # no_passwd 
 ########################################
-cp -rf hosts  /etc/  
 nodenum=`grep hvn ./hosts | wc -l  | awk '{print $1}'` # 
 tmppath=`pwd`
 nodelist=`awk '{print $1 }' ip_map | perl -lane  ' push @a,$_ ;END{print join ",",@a }'`
@@ -77,22 +90,25 @@ unset tmppasswd
 ######################################
 ip=''
 name=''
-manage_eth="eth0"
+manage_eth="eth1"
 business_ip=''
+business_eth="eth0"
+business_br="br0"
+business_netmask='24'
 
 
 for  line  in `egrep  -v '^\s*#' ip_map | grep hvn | sed  -e 's/  / /g'  -e 's/ /:/g'`
 do
-     ip=`echo $line | awk -F: '{print $1}'`
-     name=`echo $line | awk -F: '{print $2}'`
-     business_ip=`echo $line | awk -F: '{print $3}'`
-     echo "########################################"
-     echo "# $ip  $name  $business_ip"
+    ip=`echo $line | awk -F: '{print $1}'`
+    name=`echo $line | awk -F: '{print $2}'`
+    business_ip=`echo $line | awk -F: '{print $3}'`
+    echo "########################################"
+    echo "# $ip  $name  $business_ip"
 	if [[ "X$name" == "Xhvn1" ]];then
         # bridging manage ip
 	    cd utility/
 	    touch ../log/bridging.log
-        nohup sh   bridging.sh $business_ip  > ../log/bridging.log    2>&1 &  
+        nohup sh   bridging.sh $business_ip $business_eth $business_br  $business_netmask > ../log/bridging.log    2>&1 &  
         cd ..
         	
         #excute A1
@@ -100,15 +116,16 @@ do
 	    touch ../log/master_before.log
 	    nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  > ../log/master_before.log   2>&1  &
 	    cd ..
+        echo "########################################"
 		continue
 	fi            
 
 	#copy file	
-        cd ..  
-        scp  -r   cloudview_deploy/     ${ip}:/root/  
-        cd cloudview_deploy
+    cd ..  
+    scp  -r   cloudview_deploy/     ${ip}:/root/  
+    cd cloudview_deploy
 
-    tmp_cmd="cd /root/cloudview_deploy/utility/;touch ../log/bridging; nohup sh   bridging.sh $business_ip  >../log/bridging.log    2>&1 & " 
+    tmp_cmd="cd /root/cloudview_deploy/utility/;touch ../log/bridging; nohup sh   bridging.sh $business_ip $business_eth $business_br  $business_netmask   >../log/bridging.log    2>&1 & " 
     ssh $ip $tmp_cmd 
     unset tmp_cmd 
     
@@ -124,6 +141,17 @@ unset ip
 unset name 
 unset business_ip
 unset manage_eth
+echo 'Wait 30 Second!'
 
+
+
+for  line  in `cat hosts| grep hvn  | grep -v hvn1 `
+do
+    ip=`echo $line | awk -F: '{print $1}'`
+    name=`echo $line | awk -F: '{print $2}'`
+    business_ip=`echo $line | awk -F: '{print $3}'`
+    
+
+done
 checkfinish 
 
