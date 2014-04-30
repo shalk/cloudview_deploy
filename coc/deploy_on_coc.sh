@@ -47,6 +47,7 @@ expect -c "
 echo "server $time_server_ip prefer" >> /etc/ntp.conf
 echo "sntp -P no -r $time_server_ip" >> /etc/rc.d/after.local
 sntp -P no -r $time_server_ip
+hwclock -w
 chkconfig ntp on
 service ntp start 
 
