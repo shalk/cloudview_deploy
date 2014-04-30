@@ -34,8 +34,14 @@ expect -c "
 	\"login:\" {send \"root\r\"; exp_continue}
 	\"Password:\" {send \"111111\r\";} 
 	} 
+    expect {
+	\"Escape character\" {send \"\r\r\" ; exp_continue} 
+	\"Escape character\" {send \"\r\r\" ; exp_continue} 
+	\"login:\" {send \"root\r\"; exp_continue}
+	\"Password:\" {send \"111111\r\";} 
+	} 
 	expect \"~ #\"
-    	send \"$ETHCMD \r\"
+    send \"$ETHCMD \r\"
 	expect \"~ #\"
 	send \"$CMD2 \r\"
 	expect \"~ #\"

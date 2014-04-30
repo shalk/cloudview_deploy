@@ -157,7 +157,7 @@ do
     name=`echo $line | awk -F: '{print $2}'`
     business_ip=`echo $line | awk -F: '{print $3}'`
     ssh $ip  'test -f /root/cloudview_deploy/hvn/success_b1'
-    if [[ $? != 0 ]]
+    if [[ $? == 0 ]]
     then
         echo  $ip "  finish"
     else
@@ -168,7 +168,7 @@ done
 
 masterip=`grep 'hvn1 ' ip_map | awk '{print $1}'`
 test -f ./master/success_a1
-if [[ $? != 0 ]]
+if [[ $? == 0 ]]
 then
     echo  $masterip "  finish"
 else

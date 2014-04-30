@@ -1,78 +1,78 @@
 #!/bin/bash
 cd `dirname $0`
-#time_server_ip=`perl -lane  "print if /hvn1$/ || /hvn1 / " ../hosts  | awk '{print $1}' `
-####################
-## check network 
+time_server_ip=`perl -lane  "print if /hvn1$/ || /hvn1 / " ../hosts  | awk '{print $1}' `
 ###################
-#if cd ../cloudview > /dev/null
-#then
-#        echo
-#else
-#        echo "ln -s  ../cloudview   cloudview_fullname_and_fullpath "
-#        exit 1
-#fi
-#if   ping  $time_server_ip  -c 2 > /dev/null
-#then
-#     echo 
-#else
-#    echo "ping $time_server_ip is failed , Please check the network!"
-#    exit 1
-#fi
+# check network 
+##################
+if cd ../cloudview > /dev/null
+then
+        echo
+else
+        echo "ln -s  ../cloudview   cloudview_fullname_and_fullpath "
+        exit 1
+fi
+if   ping  $time_server_ip  -c 2 > /dev/null
+then
+     echo 
+else
+    echo "ping $time_server_ip is failed , Please check the network!"
+    exit 1
+fi
+#######################################
+#  config ssh
+###################################
+perl -p -i -e "s/^.*PasswordAuthentication.*$/PasswordAuthentication yes/" /etc/ssh/sshd_config
+perl -p -i -e "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config
+perl -p -i -e "s/^.*StrictHostKeyChecking.*$/StrictHostKeyChecking no/" /etc/ssh/ssh_config
+service sshd restart 
+
+
+############################################
+# add into cluster
+############################3
+expect -c "
+ 	spawn scp -r $time_server_ip:/root/.ssh/  /root
+	expect {
+	\"not know\" {send_user \"[exec echo \"not know\"]\";exit}
+	\"(yes/no)?\" {send \"yes\r\";exp_continue}
+	\"password:\" {send  \"111111\r\";exp_continue}
+	\"Password:\" {send  \"111111\r\";exp_continue}
+	\"Permission denied, please try again.\" {send_user \"[exec echo \"Error:Password is wrong\"]\" exit  }
+	}
+"
+
+#########################################  
+# step   time sync
+#  sync time with master 
+######################################### 
+echo "server $time_server_ip prefer" >> /etc/ntp.conf
+echo "sntp -P no -r $time_server_ip" >> /etc/rc.d/after.local
+sntp -P no -r $time_server_ip
+hwclock -w
+chkconfig ntp on
+service ntp start 
+
+
+cp -rf ../hosts  /etc/hosts
+echo cvm > /etc/HOSTNAME
+hostname cvm 
 ########################################
-##  config ssh
-####################################
-#perl -p -i -e "s/^.*PasswordAuthentication.*$/PasswordAuthentication yes/" /etc/ssh/sshd_config
-#perl -p -i -e "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config
-#perl -p -i -e "s/^.*StrictHostKeyChecking.*$/StrictHostKeyChecking no/" /etc/ssh/ssh_config
-#service sshd restart 
-#
-#
-#############################################
-## add into cluster
-#############################3
-#expect -c "
-# 	spawn scp -r $time_server_ip:/root/.ssh/  /root
-#	expect {
-#	\"not know\" {send_user \"[exec echo \"not know\"]\";exit}
-#	\"(yes/no)?\" {send \"yes\r\";exp_continue}
-#	\"password:\" {send  \"111111\r\";exp_continue}
-#	\"Password:\" {send  \"111111\r\";exp_continue}
-#	\"Permission denied, please try again.\" {send_user \"[exec echo \"Error:Password is wrong\"]\" exit  }
-#	}
-#"
-#
-##########################################  
-## step   time sync
-##  sync time with master 
-########################################## 
-#echo "server $time_server_ip prefer" >> /etc/ntp.conf
-#echo "sntp -P no -r $time_server_ip" >> /etc/rc.d/after.local
-#sntp -P no -r $time_server_ip
-#hwclock -w
-#chkconfig ntp on
-#service ntp start 
-#
-#
-#cp -rf ../hosts  /etc/hosts
-#echo cvm > /etc/HOSTNAME
-#hostname cvm 
-#########################################
-## change vm xml 
-#########################################
-# 
-#mkdir -p /dsx01/iso
-#mkdir -p /dsx01/img
-#mkdir -p /dsx01/cfg
-#
-#########################################
-#
+# change vm xml 
+########################################
+ 
+mkdir -p /dsx01/iso
+mkdir -p /dsx01/img
+mkdir -p /dsx01/cfg
+
+########################################
+
 tmppath=`pwd`
-#cd  ../cloudview/Supports/third-party_tools/installer*/
-#chmod a+x *
-#./uninstall*
-#sleep 10
-#./install*
-#cd $tmppath
+cd  ../cloudview/Supports/third-party_tools/installer*/
+chmod a+x *
+./uninstall*
+sleep 10
+./install*
+cd $tmppath
 
 cd ../cloudview/msp
 chmod a+x *
