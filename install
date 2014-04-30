@@ -105,13 +105,13 @@ do
     echo "########################################"
     echo "# $ip  $name  $business_ip"
 	if [[ "X$name" == "Xhvn1" ]];then
-        # bridging manage ip
+        # bridging bussiness  ip
 	    cd utility/
 	    touch ../log/bridging.log
         nohup sh   bridging.sh $business_ip $business_eth $business_br  $business_netmask > ../log/bridging.log    2>&1 &  
         cd ..
         	
-        #excute A1
+        #excute A1  master 
         cd master
 	    touch ../log/master_before.log
 	    nohup sh master_hyper_before_reboot.sh  $manage_eth $ip  > ../log/master_before.log   2>&1  &
@@ -124,12 +124,12 @@ do
     cd ..  
     scp  -r   cloudview_deploy/     ${ip}:/root/  
     cd cloudview_deploy
-
+    # bridging bussiness ip
     tmp_cmd="cd /root/cloudview_deploy/utility/;touch ../log/bridging; nohup sh   bridging.sh $business_ip $business_eth $business_br  $business_netmask   >../log/bridging.log    2>&1 & " 
     ssh $ip $tmp_cmd 
     unset tmp_cmd 
     
-  	#excute B1
+  	#excute B1  hvn
     tmp_cmd="cd /root/cloudview_deploy/hvn ;touch ../log/${name}_before.log ;nohup  sh  hvn_before_reboot.sh  $manage_eth  $ip  > ../log/${name}_before.log  2>&1 & "
 
     ssh $ip  $tmp_cmd 

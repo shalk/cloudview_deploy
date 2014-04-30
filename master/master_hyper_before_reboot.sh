@@ -22,6 +22,8 @@ fi
 
 eth_num=$1  # active network interface
 ip=$2     # current machine ip
+manage_br='br1'
+manage_netmask='16'
 rm success_a1
 ########################################
 # step1 copy hosts file
@@ -73,7 +75,7 @@ echo "service network start" >> /etc/init.d/after.local
 echo bridging manage network  for cvm
 
 
-sh ../utility/bridging.sh $ip $eth_num  br1  16
+sh ../utility/bridging.sh $ip $eth_num  $manage_br  $manage_netmask
 
 unset ip
 unset eth_num

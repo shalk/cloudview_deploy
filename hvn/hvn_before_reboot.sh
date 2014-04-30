@@ -20,8 +20,10 @@ then
     exit 1
 fi
 
-ip=$2 # current machine ip
 eth_num=$1  # active network interface
+ip=$2 # current machine ip
+manage_br='br1'
+manage_netmask='16'
 
 rm success_b1
 ###############################################3
@@ -71,7 +73,7 @@ service ntp start
 ########################################
 echo "service network start" >>/etc/init.d/after.local
 
-sh ../utility/bridging.sh $ip $eth_num  br1  16
+sh ../utility/bridging.sh $ip $eth_num  $manage_br  $manage_netmask
 
 unset ip
 unset eth_num
