@@ -5,23 +5,23 @@ The project can relief the deployment of CloudView which is a virtualization man
 安装准备
 =============
 
-下载本项目相应分支[代码](https://github.com/shalk/cloudview_deploy/archive/1.5.2.zip)  并解压 
+1.下载本项目相应分支[代码](https://github.com/shalk/cloudview_deploy/archive/1.5.2.zip)  并解压 
 重名名文件夹为 cloudview_deploy
 
 		$ mv   cloudview_deploy-分支名  cloudview_deploy
 
-将cloudview 安装包放入cloudview_deploy 文件夹内,删除末尾的版本号
+2.将cloudview 安装包放入cloudview_deploy 文件夹内
 
-		$ cp  -rf  cloudview1.5.2.20131202   cloudview_deploy/cloudview
+		$ cp  -rf  cloudview1.5.2.20131202   cloudview_deploy/
 
-将[cvm_template.zip](http://pan.baidu.com/s/13oPlu) 解压到cloudview_deploy 同一级目录：
+3.将[cvm_template.zip](http://pan.baidu.com/s/13oPlu) 解压到cloudview_deploy 同一级目录：
 
 		$ ls -lt
 		total 12
 		drwxr-xr-x. 10 root root 4096 Oct  8 09:14 cloudview_deploy
 		-rw-r--r--.  1 root root    0 Sep 17 11:04 cvm_template.qcow2
 
-修改ip_map文件：
+4.修改ip_map文件：
 
 		$ cat ip_map
 		# 管理网    主机名  业务网
@@ -53,7 +53,8 @@ The project can relief the deployment of CloudView which is a virtualization man
 		
 		$ reboot
 
-步骤4. 在主节点，执行after_reboot.sh,等待2分钟。
+步骤4. 若用vcell安装的系统，可跳过此步骤 
+      在主节点，执行after_reboot.sh,等待2分钟。
 	
 		
 		$ sh after_reboot.sh 
