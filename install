@@ -167,7 +167,7 @@ do
 done
 
 masterip=`grep 'hvn1 ' ip_map | awk '{print $1}'`
-test ./master/success_a1
+test -f ./master/success_a1
 if [[ $? != 0 ]]
 then
     echo  $masterip "  finish"
