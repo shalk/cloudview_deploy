@@ -39,12 +39,20 @@ echo change grub
 perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
 perl -p -i -e  " s/$/dom0_mem=4096M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
 echo change grub finish
+#######################################
+#  config ssh
+###################################
+perl -p -i -e "s/^.*PasswordAuthentication.*$/PasswordAuthentication yes/" /etc/ssh/sshd_config
+perl -p -i -e "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config
+perl -p -i -e "s/^.*StrictHostKeyChecking.*$/StrictHostKeyChecking no/" /etc/ssh/ssh_config
+service sshd restart 
 ############################################
 # step 3 replace libvirt conf and xen conf 
 ########################################
 #echo libvirt and xen conf
 #cp -rf  ../utility/conf/libvirtd.conf   /etc/libvirt/  
 #cp -rf  ../utility/conf/xend-config.sxp  /etc/xen/
+
 
 chkconfig libvirtd on
 chkconfig  xend on

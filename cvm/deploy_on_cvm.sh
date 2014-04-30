@@ -18,6 +18,14 @@ else
     echo "ping $time_server_ip is failed , Please check the network!"
     exit 1
 fi
+#######################################
+#  config ssh
+###################################
+perl -p -i -e "s/^.*PasswordAuthentication.*$/PasswordAuthentication yes/" /etc/ssh/sshd_config
+perl -p -i -e "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config
+perl -p -i -e "s/^.*StrictHostKeyChecking.*$/StrictHostKeyChecking no/" /etc/ssh/ssh_config
+service sshd restart 
+
 
 ############################################
 # add into cluster

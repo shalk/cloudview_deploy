@@ -10,10 +10,10 @@ chmod a+x install
 ./install 
 cd $tmppath
 ########################################
-bussiness_br="br1"
-perl -p -i -e "s/^BRIDGE=.*/BRIDGE=${bussiness_br}/" /etc/cvm/conf/bridge.conf
-unset bussiness_br
-
+#bussiness_br="br1"
+#perl -p -i -e "s/^BRIDGE=.*/BRIDGE=${bussiness_br}/" /etc/cvm/conf/bridge.conf
+#unset bussiness_br
+#
 unset tmppath
 touch success_a2
 

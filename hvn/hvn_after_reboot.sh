@@ -18,12 +18,12 @@ cd ../cloudview/Supports/third-party_tools/cvm-hypervisor-install/cvm-hypervisor
 chmod a+x install 
 ./install 
 ########################################
-bussiness_br="br1"
-perl -p -i -e "s/^BRIDGE=.*/BRIDGE=${bussiness_br}/" /etc/cvm/conf/bridge.conf
-unset bussiness_br
-
-cd $tmppath
-unset tmppath
+#bussiness_br="br1"
+#perl -p -i -e "s/^BRIDGE=.*/BRIDGE=${bussiness_br}/" /etc/cvm/conf/bridge.conf
+#unset bussiness_br
+#
+#cd $tmppath
+#unset tmppath
 
 #########################################3
 touch success_b2
