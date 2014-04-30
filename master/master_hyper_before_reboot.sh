@@ -38,7 +38,7 @@ echo change host finish
 # step2  change menulist
 ########################################
 echo change grub
-perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
+#perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
 perl -p -i -e  " s/$/dom0_mem=4096M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
 echo change grub finish
 #######################################

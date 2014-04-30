@@ -26,6 +26,7 @@ perl -p -i -e "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_confi
 perl -p -i -e "s/^.*StrictHostKeyChecking.*$/StrictHostKeyChecking no/" /etc/ssh/ssh_config
 service sshd restart 
 
+
 ############################################
 # add into cluster
 ############################3
@@ -73,7 +74,7 @@ sleep 10
 ./install*
 cd $tmppath
 
-cd ../cloudview/MSP
+cd ../cloudview/msp
 chmod a+x *
 mspsh=`ls | grep x64`
 
@@ -81,7 +82,9 @@ expect -c "
     set timeout 60;
     spawn ./${mspsh} -c ;
     expect {
-       \"Please select a language:\" {send \"\r\"; exp_continue}
+       \"Please select a language:\" {send \"2\r\"; exp_continue}
+       \"This will install Sugon Management Software Core Platform on your computer\" {send \"\r\"; exp_continue}
+       \"Where should Sugon Management Software Core Platform be installed?\" {send \"\r\"; exp_continue}
        \"Which components should be installed?\" {send \"\r\"; exp_continue}
        \"Remote Server: Yes?\" {send \"n\r\"; exp_continue}
        \"MySQL Home\" {send \"\r\"; exp_continue}
@@ -94,7 +97,8 @@ expect -c "
 
 cd $tmppath
 
-cd ../cloudview/COC/
+
+cd ../cloudview/coc/
 chmod a+x *
 
 cocsh=`ls | grep coc` 
@@ -103,7 +107,7 @@ expect -c "
    set timeout 60;
    spawn ./$cocsh -c;
        expect {
-        \"Please select a language:\" {send \"\r\"; exp_continue}
+        \"Please select a language:\" {send \"2\r\"; exp_continue}
         \"This will install CloudviewOperationCenter on your computer\" {send \"\r\"; exp_continue}
         \"InitData\" {send \"\r\"; exp_continue}
         \"StorageManagementConfiguration\" {send \"\r\"; exp_continue}
@@ -116,7 +120,6 @@ expect -c "
 cd $tmppath
 
 
-
 sleep 30
 
 /etc/init.d/cloudview status
@@ -127,24 +130,24 @@ sleep 10
 /etc/init.d/tomcat start
 
 
-MANAGE_IP=`grep coc /etc/hosts | awk '{print $1 }'`
-MANAGE_MAC= `head -n 1 ../utility/create_vm/coc_mac `
-MANAGE_ETH=`ifconfig -a | grep $MANAGE_MAC | awk '{print $1}'`
+MANAGE_IP=`grep coc /etc/hosts | awk '{ print $1 }'`
+MANAGE_MAC=`tail -n 1 ../coc_mac `
+MANAGE_ETH=`ifconfig -a | grep $MANAGE_MAC | cut -b 1-4`
 
-BUSSINESS_IP=`grep coc ip_map | awk '{print $3}'   `
-BUSSINESS_MAC= `head -n 1 ../utility/create_vm/coc_mac `
-BUSSINESS_ETH=`ifconfig -a | grep $BUSSINESS_MAC | awk '{print $1}'`
+BUSSINESS_IP=`grep coc ../ip_map | awk '{print $3}'   `
+BUSSINESS_MAC=`head -n 1 ../coc_mac `
+BUSSINESS_ETH=`ifconfig -a | grep $BUSSINESS_MAC | cut -b 1-4`
 BUSSINESS_MASK=24
 
-cp -rf ../utility/conf/ifcfg-eth0  /tmp/ifcfg-eth0 
-cp -rf ../utility/conf/ifcfg-eth0  /tmp/ifcfg-eth1 
+cp -rf ../utility/conf/ifcfg-eth0  /tmp/ifcfg-eth0
+cp -rf ../utility/conf/ifcfg-eth0  /tmp/ifcfg-eth1
 
-perl -p -i -e  "s/^.*$/IPADDR='${MANAGE_IP}\/16'/  if /^IPADDR/" /tmp/ifcfg-${MANAGE_ETH} 
-perl -p -i -e  "s/^.*$/IPADDR='${BUSSINESS_IP}\/${BUSSINESS_MASK}'/  if /^IPADDR/" /tmp/ifcfg-${BUSSINESS_ETH} 
+perl -p -i -e  "s/^.*$/IPADDR='${MANAGE_IP}\/16'/  if /^IPADDR/" /tmp/ifcfg-${MANAGE_ETH}
+perl -p -i -e  "s/^.*$/IPADDR='${BUSSINESS_IP}\/${BUSSINESS_MASK}'/  if /^IPADDR/" /tmp/ifcfg-${BUSSINESS_ETH}
 
 cp -rf /tmp/ifcfg-eth0 /etc/sysconfig/network/
 cp -rf /tmp/ifcfg-eth1 /etc/sysconfig/network/
 
-ssh $MANAGE_IP  "service network restart "
-ssh $MANAGE_IP "service cloudview start "
-ssh $MANAGE_IP "service tomcat start "
+service network restart 
+service cloudview start 
+service tomcat start 

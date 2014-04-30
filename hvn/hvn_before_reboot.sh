@@ -35,7 +35,7 @@ unset currenthostname
 ########################################
 # step1 change menulist
 ########################################
-perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
+#perl -p -i -e  's/^default .*$/default 2/' /boot/grub/menu.lst
 perl -p -i -e  "s/$/dom0_mem=4096M/ if /xen.gz/ && ! /dom0_mem/" /boot/grub/menu.lst
 perl -p -i -e  "s/dom0_mem=(\d+)M/dom0_mem=4096M/ " /boot/grub/menu.lst
 

@@ -31,7 +31,10 @@ cp -rf cvm_template.xml $XML_NAME
 tmppath=`pwd`
 
 cd ../../../
-unrar x cvm_template.rar
+if [[ ! -f cvm_template.qcow2 ]]
+then 
+    unrar x cvm_template.rar
+fi
 qemu-img convert -f qcow2  cvm_template.qcow2  -O raw  $IMG_PATH
 echo  'img convert finish '
 cd $tmppath
@@ -42,7 +45,7 @@ MAC_NAMEB=`echo 00:16$(hexdump -n4 -e '/1 ":%02X"' /dev/urandom)`
 MAC_FILE="${TEMPLATE_NAME}_mac"
 
 cd ../../
-echo > $MAC_FILE 
+rm -rf $MAC_FILE
 echo $MAC_NAMEA >> $MAC_FILE
 echo $MAC_NAMEB >> $MAC_FILE
 cd $tmppath 

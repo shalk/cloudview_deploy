@@ -12,15 +12,19 @@ TEMPLATE_NAME=${1:-cvm_test}
 
 # prepare   xml  and  img  of   virtual machine 
 sh create_a_vm.sh $TEMPLATE_NAME
-sleep 90
+echo "Wait 2 minutes"
+sleep 120
 
 MANAGE_IP=`grep $TEMPLATE_NAME /etc/hosts | awk '{print $1 }'`
-MANAGE_MAC= `head -n 1 ${TEMPLATE_NAME}_mac`
+MANAGE_MAC=`tail -n 1 ../../${TEMPLATE_NAME}_mac`
 
 echo  "$TEMPLATE_NAME  start  finish "
 ###################################################
 
-ETHCMD="eth=`ifconfig -a | grep $MANAGE_MAC | awk '{print $1}'`"
+ETHCMD="eth=\`ifconfig -a | grep ${MANAGE_MAC} | cut -b 1-4 \`"
+CMD2="ifconfig \\\${eth} $MANAGE_IP  netmask  255.255.0.0 "
+#echo $ETHCMD
+#echo $CMD2
 expect -c "
     set timeout 10
     spawn virsh console $TEMPLATE_NAME 
@@ -31,11 +35,9 @@ expect -c "
 	\"Password:\" {send \"111111\r\";} 
 	} 
 	expect \"~ #\"
-	send \"echo  123\r\" 
+    	send \"$ETHCMD \r\"
 	expect \"~ #\"
-    expecpt\"$ETHCMD\"
-	expect \"~ #\"
-	send \"ifconfig \$eth $MANAGE_IP  netmask  255.255.0.0 \r\"
+	send \"$CMD2 \r\"
 	expect \"~ #\"
 	send \"exit\r\"
 	expect \"logout\"
@@ -57,9 +59,12 @@ expect -c "
 "
 scp  -r ../../../cloudview_deploy/  $MANAGE_IP:/root/
 
-ssh $MANAGE_IP  "cd /root/cloudview_deploy/${TEMPLATE_NAME}; sh deploy_on_${TEMPLATE_NAME}.sh"
-########################################
-#  set permanent  ip 
-###################################
+echo $MANAGE_IP
+echo $TEMPLATE_NAME
 
+ssh $MANAGE_IP  "cd /root/cloudview_deploy/${TEMPLATE_NAME}; sh deploy_on_${TEMPLATE_NAME}.sh"
+#########################################
+##  set permanent  ip 
+####################################
+#
 echo "VM  $TEMPLATE_NAME  FINISH "
