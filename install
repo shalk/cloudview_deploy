@@ -1,23 +1,23 @@
 #!/usr/bin/env perl
 use strict;
-#use Data::Dumper;
-#use lib './lib';
-#use ShellRun ;
-############
+use Smart::Comments;
+use lib './lib';
 #
 our $debug= 1;
 our %hvn_info ; 
 our %master_info ;
 our %cvm_info  ;
 our %coc_info  ;
+our %csp_info  ;
 
 
 sub usage {
     
-print """
+print  <<'EOF';
 Usage:
-  sh  install [Option] 
-Option:
+  sh  install [COMMAND] 
+COMMAND:
+
 no_passwd
 menu_lst
 time_sync
@@ -25,16 +25,29 @@ hostname
 bridge
 hyper_install
 ssh_config
-""";
-
+EOF
 
 }
-
+sub set_localtime {
+    my $date = shift || "2013-12-12 12:00:00";
+    my $cmd = "utility/set_localtime/set_localtime.sh $date"  ;
+    &exe($cmd);
+}
+sub rename_cloudview{
+    if(! -d cloudview ) 
+    {
+        my $val = &exe( 'mv  cloudview*  cloudview');
+        return if $val;
+    } else {
+        return 
+    }
+    die "cloudview software is not in current directory,Please put it in!";
+}
 sub no_passwd {
-   # my $passwd =  "111111";
+    my $passwd =  "111111";
     my @nodelist=  @_;
     my $node= join "," ,@nodelist;
-    my $cmd = "cd utility/nopasswd/; ./xmakessh --pass 111111 --nodes  $node ; cd ../../ ";
+    my $cmd = "cd utility/nopasswd/; ./xmakessh --pass  $passwd --nodes  $node ; cd ../../ ";
     &exe( $cmd); 
 }
 
@@ -55,9 +68,14 @@ sub time_sync_client{
     &exe($cmd);
 }
 
-sub hostname{
+sub set_hostname{
     my $name = shift;
     my $cmd = "utility/hostname/hostname.sh  $name;  cp  -rf hosts /etc/hosts ";
+    &exe($cmd);
+} 
+sub cp_hosts{
+    my $cmd = "cp -rf /etc/hosts  /etc/hosts.bak; cp -rf  hosts /etc/hosts";
+    -f 'hosts' or die "hosts file is not in current directory!";
     &exe($cmd);
 } 
 
@@ -65,7 +83,8 @@ sub bridge{
     my $ip  = shift;
     my $eth = shift;
     my $br = shift;
-    my $cmd="utility/bridge/bridging.sh $ip  $eth $br  ";
+    my $netmask = shift;
+    my $cmd="utility/bridge/bridging.sh $ip  $eth $br $netmask ";
     &exe($cmd);
 }
 sub hyper_install{
@@ -88,35 +107,39 @@ sub exe {
     if($debug){
       print "$cmd \n";
     }else{
-      system($cmd);
+ #     system($cmd);
  #   my $res = ShellRun::excute($cmd,undef, "&<STDIN",">&STDOUT");
  #   return $res;
     }
 }
 sub universe {
     my $ip1 = shift;
-    my $hostname = $hvn_info{$_}{"hostname"};
-    my $ip2 =  $hvn_info{$_}{"ip2"};
+    my $hostname = shift; 
+    my $ip2 =  shift;
+    &set_hostname( $hostname); 
+    &menu_lst(); 
     &ssh_config();
     &virtual_service_on();
-    &hostname( $hostname); 
-    &menu_lst(); 
+    &cp_hosts;
     &bridge(   $ip1,
-               "eth0",
-               "br0"
+               "eth1",
+               "br1",
+               "16" 
                );
     &bridge(   $ip2,
-               "eth1",
-               "br1"
+               "eth0",
+               "br0",
+               "24"
                ) if $ip2;
 }
 
 sub hvn {
     my $ip = shift;
     my $master_ip = &get_master_ip; 
-    &universe($ip);
+### do universe thing...
+    &universe($ip,$hvn_info{$ip}{'hostname'},$hvn_info{$ip}{'ip2'});
+### set up time ntp client...
     &time_sync_client($master_ip);
-    &hyper_install();
 }
 
 sub batch_hvn {
@@ -129,7 +152,7 @@ sub batch_hvn {
 
 sub send_tool{
     my $ip  = shift;
-    my $cmd = "scp -r ../cloudview_deploy/  $ip:/root/"; 
+    my $cmd = "scp -r ../cloudview_deploy/  $ip:/root/ &"; 
     &exe($cmd);
 }
 sub log_info {
@@ -149,19 +172,32 @@ sub get_cvm_ip{
     my @ip =  keys %cvm_info;
     return $ip[0];
 }
+sub check_ip{
+    my $ip = shift;
+    if($ip =~ /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/)
+    {
+        return 1;
+    }else {
+        return 0;
+    }
+}
 
 sub analyze_ip_map{
-    open FH , "< ip_map" or die "can not find ip_map";
+    my $input_filename = "ip_map";
+    my $output_filename = "hosts";
+    open FH , "< $input_filename" or die "can not find ip_map";
     system ("touch hosts");
-    open FH1, "> hosts" or die "can not open hosts";
+    open FH1, "> $output_filename" or die "can not open hosts";
     print FH1 "127.0.0.1 localhost\n";
     while(<FH>){
-      s/^\s*//;
-      s/\s*$//;
-      s/\s+/ /g;
+      s/^\s*//; #delete head blank
+      s/\s*$//; #delete last blank
+      s/\s+/ /g;#delete unnecessary blank 
+      next if /^#/; #skip comment
       my ($ip1,$name,$ip2) = split / /;
-      if ($name eq 'hvn1')  
-      {
+      &check_ip($ip1) or die "$ip1 is not a ip!";
+      &check_ip($ip2) or die "$ip2 is not a ip!";
+      if ($name eq 'hvn1')  {
        $master_info{$ip1}= {
           hostname => $name,
           ip2      => $ip2
@@ -179,9 +215,13 @@ sub analyze_ip_map{
           hostname => $name,
           ip2      => $ip2
         }; 
+       } elsif ($name =~ 'csp'){
+       $csp_info{$ip1}= {
+          hostname => $name,
+          ip2      => $ip2
+        }; 
         
-        } elsif ($name =~ /hvn/)
-       {
+       } elsif ($name =~ /hvn/){
        $hvn_info{$ip1}= {
           hostname => $name,
           ip2      => $ip2
@@ -195,41 +235,31 @@ sub analyze_ip_map{
     close FH;
     close FH1;
 }
-sub config_business_br{
-    my $cmd = "utility/other/config_business_br.sh "."br0";
-    &exe($cmd);
-}
 
 
 sub master{
     my @nodelist= &get_nodelist; 
-   # my $master_ip = &get_master_ip; 
-    log_info( "generate hosts  ==========");
-    &exe("cat hosts");
-    log_info( "generate hosts  ==========\n");
-   
-    log_info("no_passwd ==========");
-    &no_passwd(@nodelist);
-    log_info("no_passwd ==========\n");
+    my $master_ip = &get_master_ip; 
 
-    log_info("send_tool ==========");
+### set_localtime... 
+    &set_localtime();
+### rename_cloudview...
+    &rename_cloudview;
+### set no passwd for all node...
+    &no_passwd(@nodelist);
+
+### send cloudview_deploy to all node...
     foreach(keys %hvn_info){
     &send_tool($_);
     }
-    log_info("send_tool ==========\n");
-    
-    log_info("start ntp  server  ==========");
-    &time_sync_server();
-    log_info("start ntp server  ==========\n");
 
-   
-    log_info("universe_install ===="); 
-    &universe(&get_master_ip);
-    log_info("universe_install ====\n"); 
-    
-    log_info("hyper_install ====\n"); 
-    &hyper_install();
-    log_info("hyper_install ======"); 
+### set up ntp server...
+    &time_sync_server();
+
+### do universe things... 
+    &universe(&get_master_ip,$master_info{$master_ip}{'hostname'},$master_info{$master_ip}{'ip2'});
+
+#    &hyper_install();
 }
 
 &analyze_ip_map;

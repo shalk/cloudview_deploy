@@ -1,0 +1,29 @@
+config network bridging
+on 10.8.12.43 eth0 will connect to br0
+NetworkManage: unknown service
+service: no such service NetworkManage
+Shutting down network interfaces:
+    br0       
+Error: Unable to connect to xend: Connection refused. Is xend running?
+..done    eth0      device: Intel Corporation 82576 Gigabit Network Conne
+..done    eth1      device: Intel Corporation 82576 Gigabit Network Conne
+..doneShutting down service network  .  .  .  .  .  .  .  .  ...done
+Hint: you may set mandatory devices in /etc/sysconfig/network/config
+Setting up network interfaces:
+    eth0      device: Intel Corporation 82576 Gigabit Network Conne
+    eth0      IP address: 0.0.0.0/32   
+..done    eth1      device: Intel Corporation 82576 Gigabit Network Conne
+    eth1      IP address: 0.0.0.0/32   
+..done    br0       
+    br0       Ports: [eth0] 
+set stp status failed: Operation not supported
+set forward delay failed: Operation not supported
+    br0       forwarddelay (see man ifcfg-bridge) - no ports in bridge.
+    br0       IP address: 10.8.12.43/24   
+..done    br1       
+    br1       Ports: [eth1] 
+set stp status failed: Operation not supported
+set forward delay failed: Operation not supported
+    br1       forwarddelay (see man ifcfg-bridge) - no ports in bridge.
+    br1       IP address: 20.8.12.43/16   
+..doneSetting up service network  .  .  .  .  .  .  .  .  .  ...done
