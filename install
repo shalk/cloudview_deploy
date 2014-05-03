@@ -59,7 +59,7 @@ sub menu_lst{
 
 sub time_sync_server{
     my $date = shift || "2013-12-12 12:00:00";
-    my $cmd = "utility/time_sync/ntp_server.sh $date";
+    my $cmd = "utility/time_sync/ntp_server.sh \"$date\"";
     &exe($cmd);
 } 
 sub time_sync_client{
@@ -70,7 +70,7 @@ sub time_sync_client{
 
 sub set_hostname{
     my $name = shift;
-    my $cmd = "utility/hostname/hostname.sh  $name;  cp  -rf hosts /etc/hosts ";
+    my $cmd = "utility/hostname/hostname.sh  $name;   ";
     &exe($cmd);
 } 
 sub cp_hosts{
@@ -137,6 +137,7 @@ sub hvn {
     my $ip = shift;
     my $master_ip = &get_master_ip; 
 ### do universe thing...
+### %hvn_info
     &universe($ip,$hvn_info{$ip}{'hostname'},$hvn_info{$ip}{'ip2'});
 ### set up time ntp client...
     &time_sync_client($master_ip);
@@ -144,7 +145,7 @@ sub hvn {
 
 sub batch_hvn {
     foreach my $remote_ip (keys %hvn_info){
-    my  $remote_command = "cd /root/cloudview_deploy/; install hvn";
+    my  $remote_command = "cd /root/cloudview_deploy/; install hvn $remote_ip";
     my $cmd =  "ssh $remote_ip  \"$remote_command \" "    ;
     &exe($cmd);
     }
@@ -171,6 +172,34 @@ sub get_master_ip{
 sub get_cvm_ip{
     my @ip =  keys %cvm_info;
     return $ip[0];
+}
+sub get_local_hvn_ip {
+    my $cmd = 'ifconfig  | grep addr: | grep inet6 -v  | perl -nle  \'  print  m/addr:(\S+) /  \'';
+    my @ip =  qx($cmd);
+    chomp(@ip);
+### @ip 
+    my @hvn_ip ;
+    foreach my $local_ip (@ip){
+        push @hvn_ip, grep { $_ eq $local_ip} keys %hvn_info ;
+    }
+    if ( scalar @hvn_ip == 0){
+        local $" = "  ";
+        my @tmp = keys %hvn_info;
+        die "current machine  is not in  hvn ip list !
+             current ip list;
+             @ip
+             hvn  ip list :
+             @tmp
+            "
+             ;
+    } elsif ( scalar @hvn_ip == 1){
+        return $hvn_ip[0];
+    }else {
+        die "currnet machine match more than one ip in hvn ip list!
+             matched ip:
+             @hvn_ip
+             Please Correct  your ip config or hvn ip list !";
+    }
 }
 sub check_ip{
     my $ip = shift;
@@ -257,6 +286,7 @@ sub master{
     &time_sync_server();
 
 ### do universe things... 
+### %master_info
     &universe(&get_master_ip,$master_info{$master_ip}{'hostname'},$master_info{$master_ip}{'ip2'});
 
 #    &hyper_install();
@@ -267,7 +297,17 @@ sub master{
 if  ( @ARGV ){ 
    my $type = $ARGV[0];          
     if ( $type eq 'hvn') {
-      &hvn ;
+      my $hvn_ip = &get_local_hvn_ip;
+      if( $ARGV[1]){
+         my $hvn_ip_get =  $ARGV[1];
+         if( $hvn_ip_get ne $hvn_ip )
+         {
+          die "parameter $hvn_ip_get is not currnet's hvn manage ip
+               use $0 hvn  or $0 hvn $hvn_ip  instead ! 
+               " ;
+           }
+        }
+      &hvn($hvn_ip) ;
     }elsif ($type eq 'cvm'){
       &cvm ; 
     }elsif($type eq 'batch_hvn')
