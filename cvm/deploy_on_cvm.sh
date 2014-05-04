@@ -75,6 +75,7 @@ sleep 10
 cd $tmppath
 
 cd ../cloudview/msp
+cd ../cloudview/MSP
 chmod a+x *
 mspsh=`ls | grep x64`
 
@@ -97,7 +98,8 @@ expect -c "
 
 cd $tmppath
 
-cd ../cloudview*/cvm/
+cd ../cloudview/cvm/
+cd ../cloudview/CVM
 chmod a+x *
 
 cvmsh=`ls | grep cvm`
