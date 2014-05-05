@@ -54,6 +54,7 @@ expect -c "
 "
 sleep 5
 expect -c "
+	set timeout 30
  	spawn scp -r /root/.ssh/  $MANAGE_IP:/root
 	expect {
 	\"not know\" {send_user \"[exec echo \"not know\"]\";exit}
