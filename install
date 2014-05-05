@@ -30,7 +30,7 @@ EOF
 }
 sub set_localtime {
     my $date = shift || "2013-12-12 12:00:00";
-    my $cmd = "utility/set_localtime/set_localtime.sh $date"  ;
+    my $cmd = "utility/set_localtime/set_localtime.sh \"${date}\""  ;
     &exe($cmd);
 }
 sub rename_cloudview{
