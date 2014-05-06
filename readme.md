@@ -77,5 +77,16 @@ The project can relief the deployment of CloudView which is a virtualization man
 若需要指定安装目录：
 		
 		$ sh create_cvm.sh  /dsx01/img/
+		
+**步骤5**.(可选) 在主节点，创建coc
+		
+		$ cd master
+		$ sh create_coc.sh
+若需要指定安装目录：
+		
+		$ sh create_coc.sh  /dsx01/img/
+
+
+
 END
 =====
