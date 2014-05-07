@@ -21,7 +21,7 @@ cd $DIRNAME
 
 # prepare   xml  and  img  of   virtual machine 
 TEMPLATE_NAME=${1:-cvm}
-MOUNT_PATH=${2:-/cloudview}
+MOUNT_PATH=${2:-/cv}
 XML_NAME="${MOUNT_PATH}/${TEMPLATE_NAME}/${TEMPLATE_NAME}.xml"
 IMG_PATH="${MOUNT_PATH}/${TEMPLATE_NAME}/${TEMPLATE_NAME}.raw"
 

@@ -9,7 +9,7 @@ DIRNAME=`dirname $0`
 cd $DIRNAME
 
 TEMPLATE_NAME=${1:-cvm_test}
-MOUNT_PATH=${2:-/cloudview}
+MOUNT_PATH=${2:-/cv}
 # prepare   xml  and  img  of   virtual machine 
 sh create_a_vm.sh $TEMPLATE_NAME $MOUNT_PATH
 echo "Wait 2 minutes"

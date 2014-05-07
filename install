@@ -77,7 +77,6 @@ cd $tmppath
 ########################################
 # no_passwd 
 ########################################
-nodenum=`grep hvn ./hosts | wc -l  | awk '{print $1}'` # 
 tmppath=`pwd`
 nodelist=`awk '{print $1 }' ip_map | perl -lane  ' push @a,$_ ;END{print join ",",@a }'`
 tmppasswd='111111'
@@ -87,7 +86,6 @@ echo  ./xmakessh  --pass  $tmppasswd  --nodes  $nodelist
 ./xmakessh  --pass  $tmppasswd  --nodes  $nodelist 
 cd $tmppath
 unset tmppath
-unset nodenum
 unset tmppasswd
 unset tmppasswd
 #########################################
