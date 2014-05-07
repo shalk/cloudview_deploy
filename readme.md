@@ -34,7 +34,7 @@ The project can relief the deployment of CloudView which is a virtualization man
 4.修改ip_map文件：
 
 		$ cat ip_map
-		# 管理网    主机名  业务网
+		# 管理网    主机名  业务网(可不填)
 		10.0.23.61 hvn1  192.168.0.1       
 		10.0.23.62 hvn2  192.168.0.2
 		10.0.23.63 hvn3  192.168.0.3
@@ -57,7 +57,7 @@ The project can relief the deployment of CloudView which is a virtualization man
 **步骤1**. 在主节点，执行install.sh
 		
 		$ cd cloudview_deploy/
-		$ sh install  "2013-12-12 12:48:32"
+		$ sh install  
         #等待2分钟，执行成功。
 
 若用vcell安装的系统，执行完步骤1之后，进入步骤4 
