@@ -54,8 +54,8 @@ service ntp start
 
 
 cp -rf ../hosts  /etc/hosts
-echo coc > /etc/HOSTNAME
-hostname coc 
+echo csp > /etc/HOSTNAME
+hostname csp 
 ########################################
 # change vm xml 
 ########################################
@@ -75,7 +75,6 @@ sleep 10
 cd $tmppath
 
 cd ../cloudview/msp
-cd ../cloudview/MSP
 chmod a+x *
 mspsh=`ls | grep x64`
 
@@ -99,15 +98,15 @@ expect -c "
 cd $tmppath
 
 
-cd ../cloudview/coc/
-cd ../cloudview/COC/
+cd ../cloudview/csp/
+cd ../cloudview/CSP/
 chmod a+x *
 
-cocsh=`ls | grep coc` 
+cspsh=`ls | grep csp` 
 
 expect -c "
    set timeout 60;
-   spawn ./$cocsh -c;
+   spawn ./$cspsh -c;
        expect {
         \"Please select a language:\" {send \"2\r\"; exp_continue}
         \"This will install CloudviewOperationCenter on your computer\" {send \"\r\"; exp_continue}
@@ -115,7 +114,6 @@ expect -c "
         \"StorageManagementConfiguration\" {send \"\r\"; exp_continue}
         \"Please input Storage's Port\" {send \"\r\"; exp_continue}
         \"VirtualDirectoryConfiguration\" {send \"\r\"; exp_continue}
-        \"Please select hypervisor type\" {send \"1\r\"; exp_continue}
     }
    "
 
@@ -132,12 +130,12 @@ sleep 10
 /etc/init.d/tomcat start
 
 
-MANAGE_IP=`grep coc /etc/hosts | awk '{ print $1 }'`
-MANAGE_MAC=`tail -n 1 ../coc_mac `
+MANAGE_IP=`grep csp /etc/hosts | awk '{ print $1 }'`
+MANAGE_MAC=`tail -n 1 ../csp_mac `
 MANAGE_ETH=`ifconfig -a | grep $MANAGE_MAC | cut -b 1-4`
 
-BUSSINESS_IP=`grep coc ../ip_map | awk '{print $3}'   `
-BUSSINESS_MAC=`head -n 1 ../coc_mac `
+BUSSINESS_IP=`grep csp ../ip_map | awk '{print $3}'   `
+BUSSINESS_MAC=`head -n 1 ../csp_mac `
 BUSSINESS_ETH=`ifconfig -a | grep $BUSSINESS_MAC | cut -b 1-4`
 BUSSINESS_MASK=24
 
