@@ -1,5 +1,5 @@
 #!/bin/bash
-cvmcocpath=${2:-/cloudview}
+cvmcocpath=${1:-/cloudview}
 
 mkdir -p $cvmcocpath 
 cd ../utility/create_vm/
