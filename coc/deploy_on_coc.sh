@@ -31,6 +31,7 @@ service sshd restart
 # add into cluster
 ############################3
 expect -c "
+    set timeout 30
  	spawn scp -r $time_server_ip:/root/.ssh/  /root
 	expect {
 	\"not know\" {send_user \"[exec echo \"not know\"]\";exit}

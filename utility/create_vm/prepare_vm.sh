@@ -26,7 +26,7 @@ CMD2="ifconfig \\\${eth} $MANAGE_IP  netmask  255.255.0.0 "
 #echo $ETHCMD
 #echo $CMD2
 expect -c "
-    set timeout 10
+    set timeout 30
     spawn virsh console $TEMPLATE_NAME 
     expect {
 	\"Escape character\" {send \"\r\r\" ; exp_continue} 
