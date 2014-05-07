@@ -74,7 +74,7 @@ service ntp start
 ########################################
 echo "service network start" >>/etc/init.d/after.local
 
-sh ../utility/bridging.sh $ip $eth_num  $manage_br  $manage_netmask
+sh ../utility/bridging.sh  $eth_num  $manage_br  $ip  $manage_netmask
 
 unset ip
 unset eth_num

@@ -3,15 +3,15 @@
 #  config bridging network 
 ########################################
 #  
-# usage  $0       ip_bridging ethx  brx
-#  eg   $0  192.168.0.1  eth1 br1
+# usage  $0        ethx  brx ip netmask
+#  eg   $0  eth1 br1 192.168.0.1 16
 #          then   192.168.0.1 bridging to  br1 (eth1)
 #             
 ##########################################
 
-ip=$1
-eth_num=${2:-eth1}
-br_num=${3:-br1}
+eth_num=${1:-eth1}
+br_num=${2:-br1}
+ip=$3
 netmask=${4:-24}
 cd `dirname $0`
 
