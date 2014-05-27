@@ -76,6 +76,7 @@ sleep 10
 cd $tmppath
 
 cd ../cloudview/msp
+cd ../cloudview/MSP
 chmod a+x *
 mspsh=`ls | grep x64`
 
