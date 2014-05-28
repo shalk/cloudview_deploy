@@ -1,34 +1,6 @@
 #!/bin/bash
-#Usage(){
-##before 
-# echo "Usage:
-#     $0   time
-# egg: $0  \"2013-09-18 14:15:00\"
-#" 
-#    exit 1
-#}
-#checkfinish(){
-#
-#    echo 
-#
-#}
-#if [[ $# != 1 ]]
-#then
-#    Usage
-#fi 
-#
-#curtime=$1
-## change time in the front 
-#echo change time
-#date -s  "$curtime"
-#if [[ $? != 0 ]]
-#then
-#    echo "$curtime is not correct Time Format"
-#    Usage
-#fi
-#hwclock -w
-#echo change time finish 
-#unset curtime
+
+
 
 mkdir -p log
 # cloudview media rename
