@@ -6,7 +6,7 @@ our @ISA = qw/Exporter/;
 use Expect;
 use Carp;
 
-our $debug = 1;
+our $debug = 0;
 
 sub new {
    my $class = shift;

@@ -4,6 +4,10 @@ use strict;
 use warnings;
 use lib "./lib";
 #use Smart::Comments;
+BEGIN{
+    unshift @INC,"local/lib/perl5/x86_64-linux-thread-multi";
+    unshift @INC,"local/lib/perl5/";
+}
 
 use File::Path qw(make_path remove_tree);
 use Carp;
@@ -14,7 +18,6 @@ use MyAnalyzer;
 use MyCheck;
 use MyCluster;
 use MyCmd;
-
 
 
 my $config_filename='ip_map';
