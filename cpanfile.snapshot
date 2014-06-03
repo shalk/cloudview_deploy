@@ -1,0 +1,19 @@
+# carton snapshot format: version 1.0
+DISTRIBUTIONS
+  Expect-1.21
+    pathname: R/RG/RGIERSIG/Expect-1.21.tar.gz
+    provides:
+      Expect 1.21
+    requirements:
+      ExtUtils::MakeMaker 0
+      IO::Pty 1.03
+      IO::Tty 1.03
+  IO-Tty-1.11
+    pathname: T/TO/TODDR/IO-Tty-1.11.tar.gz
+    provides:
+      IO::Pty 1.11
+      IO::Tty 1.11
+      IO::Tty::Constant undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0

@@ -2,67 +2,68 @@
 
 
 
-mkdir -p log
-# cloudview media rename
-if [[ -d cloudview ]]
-then
-    echo 
-else
-    mv cloudview*  cloudview
-fi
-if [[ $? != 0 ]]
-then
-    echo "Make sure cloudview software  is in ( cloudview_deploy ) directory !"
-    exit 1
-fi
-
-########################################
-#   handle hosts file 
-######################################
-if [[ -f  ip_map    ]]
-then 
-   sed -i 's/  / /g' ip_map 
-   echo "127.0.0.1 localhost" > hosts  
-   awk  '{printf("%s   %s\n", $1,$2)}' ip_map >> hosts
-else
-    echo please check ip_map  is exist
-    exit 1
-fi
-cp -rf /etc/hosts  /etc/hosts.bak
-cp -rf hosts  /etc/  
+#mkdir -p log
+## cloudview media rename
+#if [[ -d cloudview ]]
+#then
+#    echo 
+#else
+#    mv cloudview*  cloudview
+#fi
+#if [[ $? != 0 ]]
+#then
+#    echo "Make sure cloudview software  is in ( cloudview_deploy ) directory !"
+#    exit 1
+#fi
+#
+#########################################
+##   handle hosts file 
+#######################################
+#if [[ -f  ip_map    ]]
+#then 
+#   sed -i 's/  / /g' ip_map 
+#   echo "127.0.0.1 localhost" > hosts  
+#   awk  '{printf("%s   %s\n", $1,$2)}' ip_map >> hosts
+#else
+#    echo please check ip_map  is exist
+#    exit 1
+#fi
+#cp -rf /etc/hosts  /etc/hosts.bak
+#cp -rf hosts  /etc/  
 ########################################
 #  extract  Support
 ###################################
-tmppath=`pwd`
-cd cloudview/Supports 
-for i  in `ls *.gz`
-do
-    gzip -d $i
-done
-for i  in `ls *.tar`
-do
-    tar -xvf  $i
-done
-
-cd $tmppath
+#tmppath=`pwd`
+#cd cloudview/Supports 
+#for i  in `ls *.gz`
+#do
+#    gzip -d $i
+#done
+#for i  in `ls *.tar`
+#do
+#    tar -xvf  $i
+#done
+#
+#cd $tmppath
 
 ########################################
 # no_passwd 
 ########################################
-tmppath=`pwd`
-nodelist=`awk '{print $1 }' ip_map | perl -lane  ' push @a,$_ ;END{print join ",",@a }'`
-tmppasswd='111111'
-cd ./utility/nopasswd/
-chmod a+x * 
-echo  ./xmakessh  --pass  $tmppasswd  --nodes  $nodelist 
-./xmakessh  --pass  $tmppasswd  --nodes  $nodelist 
-cd $tmppath
-unset tmppath
-unset tmppasswd
-unset tmppasswd
+#tmppath=`pwd`
+#nodelist=`awk '{print $1 }' ip_map | perl -lane  ' push @a,$_ ;END{print join ",",@a }'`
+#tmppasswd='111111'
+#cd ./utility/nopasswd/
+#chmod a+x * 
+#echo  ./xmakessh  --pass  $tmppasswd  --nodes  $nodelist 
+#./xmakessh  --pass  $tmppasswd  --nodes  $nodelist 
+#cd $tmppath
+#unset tmppath
+#unset tmppasswd
+#unset tmppasswd
 #########################################
 #  config  before reboot 
 ######################################
+exit 1
 ip=''
 name=''
 manage_eth="eth1"

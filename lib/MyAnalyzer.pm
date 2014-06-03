@@ -1,4 +1,5 @@
-package Master;
+package MyAnalyzer;
+use strict;
 use Carp;
 use Exporter;
 our @ISA = qw/Exporter/;
@@ -7,8 +8,8 @@ sub new {
     my $class = shift;
     my $filename = shift || 'ip_map';
     my $self = {};
-    bless $self,$class;
     $self = &analyze_ip_map($filename);
+    bless $self,$class;
     return $self;
 }
 
@@ -40,14 +41,14 @@ sub analyze_ip_map {
  
     if ($hostname =~ m/^hvn\d+$/){
        croak "shoud have more than 3 colum  " if scalar  @piece  < 2;    
-       $node_info->{$hostname}{'master'} = &get_eth_hash( shift @piece);
+       $node_info->{$hostname}{'manage'} = &get_eth_hash( shift @piece);
        $node_info->{$hostname}{'busi'} = &get_eth_hash( shift @piece);
        foreach(@piece){
          push @{$node_info->{$hostname}{'other'}} ,&get_eth_hash($_);
        }
     }elsif ($hostname =~ m/^(cvm|coc|csp)\d*$/){
        croak " shoud have 3 colum " if scalar  @piece !=  2;    
-       $node_info->{$hostname}{'master'} = &get_eth_hash( shift @piece);
+       $node_info->{$hostname}{'manage'} = &get_eth_hash( shift @piece);
        $node_info->{$hostname}{'busi'} = &get_eth_hash( shift @piece);
     }else{
      croak " line $. :  ($line)
@@ -68,7 +69,7 @@ sub get_eth_hash{
        'eth'  => $tmp[0],
        'br'   => $tmp[1],
        'ip'   => $tmp[2],
-       'mask' => $tmp[3],
+       'netmask' => $tmp[3],
    };
   }elsif(scalar @tmp == 3){
     &check_ip($tmp[1]);
@@ -76,14 +77,14 @@ sub get_eth_hash{
   return { 
        'eth'  => $tmp[0],
        'ip'   => $tmp[1],
-       'mask' => $tmp[2],
+       'netmask' => $tmp[2],
    };
   }elsif(scalar @tmp == 2) {
     &check_ip($tmp[0]);
     &check_netmask($tmp[1]);
   return { 
        'ip'   => $tmp[0],
-       'mask' => $tmp[1],
+       'netmask' => $tmp[1],
    };
   }else {
   croak "shoudn't be here !"
@@ -111,12 +112,42 @@ sub check_netmask{
     }
 }
 sub generate_hosts {
+
     my $self = shift;
     open my $fh , '> hosts' or die "can not open hosts";
-    print $fh  "127.0.0.1 localhost";
+    print $fh  "127.0.0.1 localhost\n";
     foreach my $host (keys %$self) 
     {
-      print $fh "$host ".$selft->{$host}{'master'}{'ip'};
+      my $ip  = $self->{$host}{'manage'}{'ip'};
+      print $fh "$ip $host\n";
     }
     close $fh;
+}
+sub manage_ip{
+    my $self = shift;
+    my $hostname = shift;
+    croak "$hostname is not defined " unless defined $self->{$hostname};
+    return $self->{$hostname}{'manage'}{'ip'};
+}
+sub manage_netmask{
+    my $self = shift;
+    my $hostname = shift;
+    croak "$hostname is not defined " unless defined $self->{$hostname};
+    return $self->{$hostname}{'manage'}{'netmask'};
+}
+sub manage_network {
+    my $self = shift;
+    my $hostname = shift;
+    croak "$hostname is not defined " unless defined $self->{$hostname};
+    my $ip =  $self->{$hostname}{'manage'}{'ip'} ;
+    my $netmask =  $self->{$hostname}{'manage'}{'netmask'} ;
+    return &calc_network_by_netmask($ip,$netmask);
+}
+
+# 类函数
+sub calc_network_by_netmask {
+    use Socket;
+    my $ip = shift;
+    my $netmask = shift;
+    return inet_ntoa( inet_aton($ip) & inet_aton($netmask)) ; 
 }

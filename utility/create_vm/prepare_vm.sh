@@ -15,7 +15,7 @@ sh create_a_vm.sh $TEMPLATE_NAME $MOUNT_PATH
 echo "Wait 2 minutes"
 sleep 120
 
-MANAGE_IP=`grep $TEMPLATE_NAME ../../ip_map | awk '{print $1 }'`
+MANAGE_IP=`grep $TEMPLATE_NAME ../../hosts | awk '{print $1 }'`
 MANAGE_MAC=`tail -n 1 ../../${TEMPLATE_NAME}_mac`
 
 echo  "$TEMPLATE_NAME  start  finish "
