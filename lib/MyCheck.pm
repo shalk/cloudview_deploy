@@ -27,8 +27,8 @@ sub check_cloudview_exsit{
     rename $file[0],'cloudview' unless  $file[0] eq 'cloudview' ;
  }elsif(scalar @file > 1 ) {
    croak "(@file ) which is cloudview ?
-        please detete other cloudview prefix file.
-        preserve the softerware  
+        please delete other cloudview prefix file.
+        preserve the right software  
             " if scalar @file > 1;
  } else {
     croak "Make sure cloudview software  is in ( cloudview_deploy ) directory !";

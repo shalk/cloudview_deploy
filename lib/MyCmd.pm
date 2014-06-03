@@ -26,6 +26,8 @@ sub ntp_server_cmd{
     my $master_network = shift;
     my $master_netmask = shift;    
     my $cmd = <<"EOF";
+cp -rf /etc/ntp.cof.bak /etc/ntp.conf
+ [ -f /etc/ntp.conf.bak ] ||  cp -rf /etc/ntp.conf /etc/ntp.cof.bak
 echo restrict $master_network mask  $master_netmask >> /etc/ntp.conf 
 chkconfig ntp on 
 service ntp start 
@@ -35,6 +37,8 @@ EOF
 sub ntp_client_cmd{
     my $serverip = shift;
     my $cmd =  <<"EOF";
+cp -rf /etc/ntp.cof.bak /etc/ntp.conf
+ [ -f /etc/ntp.conf.bak ] ||  cp -rf /etc/ntp.conf /etc/ntp.cof.bak
 sntp -P no -r $serverip ; 
 echo server $serverip prefer >> /etc/ntp.conf ;
 hwclock -w;
@@ -62,14 +66,18 @@ NETMASK=$netmask
 STARTMODE='auto'
 EOF
     # for suse 
+    $cmd .= "touch  /etc/sysconfig/network/ifcfg-$eth ;";
+    $cmd .= "touch  /etc/sysconfig/network/ifcfg-$br ;";
     $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-$eth  \n";
     $cmd .= "echo '$file_br' > /etc/sysconfig/network/ifcfg-$br \n";
     }else{
     my $file_eth= <<"EOF";
-IPADDR=0.0.0.0/32
+IPADDR=$ip
+NETMASK=$netmask
 STARTMODE=auto
 EOF
     # for suse
+    $cmd .= "touch  /etc/sysconfig/network/ifcfg-$eth ;";
     $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-$eth  \n";
     }
     

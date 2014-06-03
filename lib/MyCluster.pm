@@ -18,9 +18,9 @@ sub no_pass {
 
     my $self =shift;
     my $password = shift;
-    my $iplist = $self->iplist;   
+    my @iplist = $self->iplist;
 
-    croak "iplist is needed " unless $iplist;
+    croak "iplist is null " unless scalar @iplist  ;
     croak "passwd is needed "  unless $password;
     
     
@@ -47,7 +47,7 @@ sub no_pass {
     }
     
     #step 2
-    foreach my $ip (@$iplist) {
+    foreach my $ip (@iplist) {
         my $timeout = "30";
     
         $cmd = " scp -r \$HOME/.ssh ${ip}:\$HOME ";
