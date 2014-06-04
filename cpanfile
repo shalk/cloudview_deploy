@@ -1,1 +1,2 @@
-requires 'Expect'
+requires 'Expect';
+requires 'Log::Log4perl';
