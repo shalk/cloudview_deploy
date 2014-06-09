@@ -1,9 +1,8 @@
 package MyCmd;
 
-
-sub set_hostname_cmd{
+sub set_hostname_cmd {
     my $hostname = shift;
-    my $cmd  = <<"EOF";
+    my $cmd      = <<"EOF";
 hostname $hostname
 export HOSTNAME=$hostname
 echo $hostname > /etc/HOSTNAME 
@@ -11,7 +10,7 @@ EOF
     return $cmd;
 }
 
-sub vitual_service_up{
+sub vitual_service_up {
 
     my $cmd = <<'EOF';
 chkconfig libvirtd on
@@ -22,10 +21,10 @@ EOF
     return $cmd;
 }
 
-sub ntp_server_cmd{ 
+sub ntp_server_cmd {
     my $master_network = shift;
-    my $master_netmask = shift;    
-    my $cmd = <<"EOF";
+    my $master_netmask = shift;
+    my $cmd            = <<"EOF";
 cp -rf /etc/ntp.cof.bak /etc/ntp.conf
  [ -f /etc/ntp.conf.bak ] ||  cp -rf /etc/ntp.conf /etc/ntp.cof.bak
 echo restrict $master_network mask  $master_netmask >> /etc/ntp.conf 
@@ -34,9 +33,10 @@ service ntp start
 EOF
     return $cmd;
 }
-sub ntp_client_cmd{
+
+sub ntp_client_cmd {
     my $serverip = shift;
-    my $cmd =  <<"EOF";
+    my $cmd      = <<"EOF";
 cp -rf /etc/ntp.cof.bak /etc/ntp.conf
  [ -f /etc/ntp.conf.bak ] ||  cp -rf /etc/ntp.conf /etc/ntp.cof.bak
 sntp -P no -r $serverip ; 
@@ -47,16 +47,18 @@ service ntp start;
 EOF
     return $cmd;
 }
-sub network_cmd{
+
+sub network_cmd {
     my $net = shift;
-    my $cmd ;
-    my ($eth,$br,$ip,$netmask) = ($net->{'eth'},$net->{'br'},$net->{'ip'},$net->{'netmask'} );
-    if(defined $br){
-    my $file_eth= <<"EOF";
+    my $cmd;
+    my ( $eth, $br, $ip, $netmask ) =
+      ( $net->{'eth'}, $net->{'br'}, $net->{'ip'}, $net->{'netmask'} );
+    if ( defined $br ) {
+        my $file_eth = <<"EOF";
 IPADDR=0.0.0.0/32
 STARTMODE=auto
 EOF
-    my $file_br= <<"EOF";
+        my $file_br = <<"EOF";
 BRIDGE='yes'
 BRIDGE_FORWARDDELAY='0'
 BRIDGE_PORTS='${eth}'
@@ -65,23 +67,26 @@ IPADDR=$ip
 NETMASK=$netmask
 STARTMODE='auto'
 EOF
-    # for suse 
-    $cmd .= "touch  /etc/sysconfig/network/ifcfg-$eth ;";
-    $cmd .= "touch  /etc/sysconfig/network/ifcfg-$br ;";
-    $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-$eth  \n";
-    $cmd .= "echo '$file_br' > /etc/sysconfig/network/ifcfg-$br \n";
-    }else{
-    my $file_eth= <<"EOF";
+
+        # for suse
+        $cmd .= "touch  /etc/sysconfig/network/ifcfg-$eth ;";
+        $cmd .= "touch  /etc/sysconfig/network/ifcfg-$br ;";
+        $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-$eth  \n";
+        $cmd .= "echo '$file_br' > /etc/sysconfig/network/ifcfg-$br \n";
+    }
+    else {
+        my $file_eth = <<"EOF";
 IPADDR=$ip
 NETMASK=$netmask
 STARTMODE=auto
 EOF
-    # for suse
-    $cmd .= "touch  /etc/sysconfig/network/ifcfg-$eth ;";
-    $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-$eth  \n";
+
+        # for suse
+        $cmd .= "touch  /etc/sysconfig/network/ifcfg-$eth ;";
+        $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-$eth  \n";
     }
-    
-   return $cmd; 
+
+    return $cmd;
 }
 
 1;

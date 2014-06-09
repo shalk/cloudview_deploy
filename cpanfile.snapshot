@@ -1,5 +1,12 @@
 # carton snapshot format: version 1.0
 DISTRIBUTIONS
+  Data-UUID-1.219
+    pathname: R/RJ/RJBS/Data-UUID-1.219.tar.gz
+    provides:
+      Data::UUID 1.219
+    requirements:
+      Digest::MD5 0
+      ExtUtils::MakeMaker 0
   Expect-1.21
     pathname: R/RG/RGIERSIG/Expect-1.21.tar.gz
     provides:
