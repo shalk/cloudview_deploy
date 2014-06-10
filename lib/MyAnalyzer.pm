@@ -38,9 +38,9 @@ sub analyze_ip_map {
         my $hostname = shift @piece;
 
         # 主机名不能重复
-        croak $hostname, " have defined in ip_map ,Please modify ip_map
+        croak $hostname, " have exists in ip_map ,Please modify ip_map
             line $. :  ($line) 
-          " if ( defined $node_info->{$hostname} );
+          " if ( exists $node_info->{$hostname} );
 
         if ( $hostname =~ m/^hvn\d+$/ ) {
             croak "shoud have more than 3 colum  " if scalar @piece < 2;
@@ -142,21 +142,21 @@ sub generate_hosts {
 sub manage_ip {
     my $self     = shift;
     my $hostname = shift;
-    croak "$hostname is not defined " unless defined $self->{$hostname};
+    croak "$hostname is not exists " unless exists $self->{$hostname};
     return $self->{$hostname}{'manage'}{'ip'};
 }
 
 sub manage_netmask {
     my $self     = shift;
     my $hostname = shift;
-    croak "$hostname is not defined " unless defined $self->{$hostname};
+    croak "$hostname is not exists " unless exists $self->{$hostname};
     return $self->{$hostname}{'manage'}{'netmask'};
 }
 
 sub manage_network {
     my $self     = shift;
     my $hostname = shift;
-    croak "$hostname is not defined " unless defined $self->{$hostname};
+    croak "$hostname is not exists " unless exists $self->{$hostname};
     my $ip      = $self->{$hostname}{'manage'}{'ip'};
     my $netmask = $self->{$hostname}{'manage'}{'netmask'};
     return &calc_network_by_netmask( $ip, $netmask );

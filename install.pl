@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use lib "./lib";
-use Smart::Comments;
+#use Smart::Comments;
 
 BEGIN {
     unshift @INC, "local/lib/perl5/x86_64-linux-thread-multi";
@@ -19,6 +19,7 @@ use MyCluster;
 use MyCmd;
 use MyVm;
 
+$MyCluster::debug = 0;
 my $config_filename = 'ip_map';
 my $password        = '111111';
 my @iplist;
@@ -61,6 +62,9 @@ $master->generate_hosts();
 # #########################################
 foreach my $host ( keys %$master ) {
     my $ip = $master->manage_ip($host);
+    next if ($host =~ /^cvm/);
+    next if ($host =~ /^coc/);
+    next if ($host =~ /^csp/);
     if ( MyCheck::check_ip_connect($ip) ) {
         push @iplist, $ip;
     }

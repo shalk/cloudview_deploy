@@ -7,20 +7,21 @@ use Data::UUID;
 use Cwd;
 use Expect;
 
-our $debug = 1;
+our $debug = 0;
 
 sub new {
 
     # arg need a hash ref
     #    name =>         (needed)
+    #    disk =>         (needed)
+    #    xml  =>         (needed)
     #    cpu  =>
     #    mem  =>
-    #    disk =>         (needed)
-    #    br1  =>
-    #    br2  =>
-    #    xml  =>         (needed)
-    #    mac1 =>
-    #    mac2 =>
+    #    manage_br  =>
+    #    busi_br  =>
+    #    manage_mac =>
+    #    busi_mac =>
+
     my $class = shift;
     my $arg   = shift;
     my $self  = {};
@@ -37,6 +38,7 @@ sub generate_raw {
     #    origin img file
     # return :
     #    void
+
     my $self = shift;
     my $file = $self->{'orig'};
     croak "need a origin img as parameter" unless $file;
@@ -70,10 +72,7 @@ sub generate_raw {
 
     chdir $cwd;
     if ( $name =~ /\.qcow2$/ ) {
-        &exe("qemu-img convert -f qcow2 $file  -O raw  $target_file");
-        if ( $? >> 8 != 0 ) {
-            croak "img convert fail";
-        }
+        &exe("qemu-img convert -f qcow2 $file  -O raw  $target_file -p ");
     }
     else {
         &exe("qemu-img check $target_file");
@@ -88,29 +87,30 @@ sub generate_xml {
     # param:
     #   $self
     # return:
-    #   return [xml,mac1,mac2]
+    #   vold 
+
     my $self    = shift;
     my $vm_name = $self->{'name'};
     my $ug      = new Data::UUID;
     my $vm_uuid = lc $ug->create_str();
 
-    my $vm_mem = $self->{'mem'} || 41940304;
+    my $vm_mem = $self->{'mem'} || 4194304;
     my $vm_cpu = $self->{'cpu'} || 2;
     my $vm_img = $self->{'disk'};
     croak "vm img disk undefined " unless defined $vm_img;
 
-    my $vm_br1 = $self->{'br0'} || 'br0';
-    my $vm_br2 = $self->{'br1'} || 'br1';
+    my $vm_br1 = $self->{'manage_br'} || 'br1';
+    my $vm_br2 = $self->{'busi_br'} || 'br0';
 
     my $vm_mac1 = &generate_mac;
     my $vm_mac2 = &generate_mac;
 
     $self->{'cpu'}  = $vm_cpu;
     $self->{'mem'}  = $vm_mem;
-    $self->{'br1'}  = $vm_br1;
-    $self->{'br2'}  = $vm_br2;
-    $self->{'mac1'} = $vm_mac1;
-    $self->{'mac2'} = $vm_mac2;
+    $self->{'manage_br'}  = $vm_br1;
+    $self->{'busi_br'}  = $vm_br2;
+    $self->{'manage_mac'} = $vm_mac1;
+    $self->{'busi_mac'} = $vm_mac2;
 
     my $xml_file = <<"EOF";
 <domain type='xen' >
@@ -175,9 +175,9 @@ sub virsh_console_exec {
     my $remote_cmd = shift;
     my $username   = shift || 'root';
     my $password   = shift || '111111';
-    my $cmd        = "virsh console suse1";
+    my $cmd        = "virsh console ".$self->{'name'};
 
-    my $timeout = 60;
+    my $timeout = 30;
     my $exp     = new Expect;
     $exp->raw_pty(1);
     $exp->spawn($cmd) or die "can not exec $cmd";
@@ -189,7 +189,7 @@ sub virsh_console_exec {
                   sub { my $self = shift; $self->send("\n"); exp_continue; }
             ],
             [
-                qr/login: / => sub {
+                qr/login: $/ => sub {
                     my $self = shift;
                     $self->send("${username}\r");
                     exp_continue;
@@ -203,25 +203,27 @@ sub virsh_console_exec {
                   }
             ],
             [
-                qr/~ # /,
+                qr/sugon:~ #/,
                 sub {
                     my $self = shift;
-                    $self->send("$remote_cmd\n");
-                    $self->send("ls\n");
+                    sleep 1;
+                    foreach my $singlecmd  (@$remote_cmd){
+                    $self->send_slow(0.1,"\n");
+                    $self->send("$singlecmd");
+                    $self->send_slow(0.5,"\n");
+                    }
                   }
             ],
             [
                 timeout => sub {
                     my $self = shift;
+                    $self->send("exit\n");
                     $self->send("^]\n");
                   }
             ],
-            '-re',
-            '[#>:] $',
         );
     }
     $exp->soft_close();
-
 }
 
 sub vm_define {
@@ -242,6 +244,9 @@ sub exe {
     my $cmd = shift;
     if ( $debug == 0 ) {
         system($cmd);
+        if( $?>>8 != 0 ){
+          croak "command( $cmd ) failed !";
+        }
     }
     else {
         print $cmd, "\n";
@@ -252,8 +257,8 @@ sub generate_mac {
     my $mac = '00:16';
     for ( 1 .. 4 ) {
         $mac .= ':';
-        $mac .= ( "A" .. "Z", 0 .. 9 )[ rand(36) ];
-        $mac .= ( "A" .. "Z", 0 .. 9 )[ rand(36) ];
+        $mac .= ( "A" .. "F", 0 .. 9 )[ rand(16) ];
+        $mac .= ( "A" .. "F", 0 .. 9 )[ rand(16) ];
     }
     return $mac;
 }
