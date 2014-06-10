@@ -9,7 +9,7 @@ sub check_ip_connect {
     my $ip = shift;
     my $ret;
     my $p = Net::Ping->new();
-    if ( !$p->ping($ip) ) {
+    if ( !$p->ping($ip) && !$p->ping($ip)&& !$p->ping($ip) ) {
         print "\033[31m  $ip\033[0m is not alive ,can not ping !\n";
         $ret = 0;
     }

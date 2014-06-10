@@ -92,4 +92,4 @@ rm  -rf /opt/msp
 
 }
 
-
+install

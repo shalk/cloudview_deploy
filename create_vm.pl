@@ -46,7 +46,7 @@ if ($help) {
 Usage: perl create_vm.pl  --name  <vm_name>  [ --network  <ip_map> ] --orig <origin vm img >  --dest  <dir storage vm >  --host < vm on which host>
 
     Options:
-       
+          
         --name  virtual machine name 
                 default the  value is cvm               
 
@@ -120,7 +120,7 @@ for(my $i=1;$i<=$n;$i++){
         select(undef, undef, undef, 1);
 }
 #set temporate manage ip
-print "waits 120s finish\n";
+print "VM's OS  boot up  \n";
 
 my $cmd1 = "ifconfig -a | grep ".uc($vm->{'manage_mac'})." | cut -b 1-4 > /tmp/mac1" ;
 my $cmd2 = 'ifconfig $( cat /tmp/mac1 ) '.$vm->{'manage_ip'}." netmask ".$master->{$vm_name}{'manage'}{'netmask'};

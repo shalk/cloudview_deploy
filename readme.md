@@ -57,16 +57,17 @@ The project can relief the deployment of CloudView which is a virtualization man
 
 **步骤2**. 在主节点，创建cvm
 		
-		$ cd master
-		$ sh create_cvm.sh
+		$  perl create_vm.pl  --name cvm  --orig /root/shalk/cvm_template.qcow2
+
 若需要指定安装目录：
 		
-		$ sh create_cvm.sh  /dsx01/img/
+		$  perl create_vm.pl  -name cvm --orig  /root/shalk/cvm_template.qcow2  --dest /dsx01/img/
+
 		
 **步骤3**.(可选) 在主节点，创建coc
 		
-		$ cd master
-		$ sh create_coc.sh
+		$ perl create_vm.pl  --name coc
+
 若需要指定安装目录：
 		
 		$ sh create_coc.sh  /dsx01/img/
