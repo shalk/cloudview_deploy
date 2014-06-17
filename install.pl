@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use lib "./lib";
+
 #use Smart::Comments;
 
 BEGIN {
@@ -18,6 +19,7 @@ use MyCheck;
 use MyCluster;
 use MyCmd;
 use MyVm;
+use MyUtil;
 
 $MyCluster::debug = 0;
 my $config_filename = 'ip_map';
@@ -62,9 +64,9 @@ $master->generate_hosts();
 # #########################################
 foreach my $host ( keys %$master ) {
     my $ip = $master->manage_ip($host);
-    next if ($host =~ /^cvm/);
-    next if ($host =~ /^coc/);
-    next if ($host =~ /^csp/);
+    next if ( $host =~ /^cvm/ );
+    next if ( $host =~ /^coc/ );
+    next if ( $host =~ /^csp/ );
     if ( MyCheck::check_ip_connect($ip) ) {
         push @iplist, $ip;
     }
@@ -90,9 +92,10 @@ $cluster->no_pass($password);
 &mylog("set up time sysnc");
 
 #set local time server
-my $ntp_serverip   = $master->manage_ip('hvn1');
-my $master_network = $master->manage_network('hvn1');
-my $master_netmask = $master->manage_netmask('hvn1');
+my $ntp_serverip = MyUtil::local_manage_ip($master->get_all_manage_ip);
+my $local_hostname = $master->get_host_from_manage_ip($ntp_serverip);
+my $master_network = $master->manage_network($local_hostname);
+my $master_netmask = $master->manage_netmask($local_hostname);
 my $cmd            = MyCmd::ntp_server_cmd( $master_network, $master_netmask );
 MyCluster::remote_exec( $ntp_serverip, $cmd );
 
@@ -103,6 +106,9 @@ $cluster->batch_exec($cmd);
 #change hostname
 &mylog("setup hostname");
 foreach my $host ( keys %$master ) {
+    next if ( $host =~ /^cvm/ );
+    next if ( $host =~ /^coc/ );
+    next if ( $host =~ /^csp/ );
     my $ip  = $master->{$host}{'manage'}{'ip'};
     my $cmd = MyCmd::set_hostname_cmd($host);
     MyCluster::remote_exec( $ip, $cmd );
@@ -111,6 +117,9 @@ foreach my $host ( keys %$master ) {
 # make up network
 &mylog("setup network");
 foreach my $host ( keys %$master ) {
+    next if ( $host =~ /^cvm/ );
+    next if ( $host =~ /^coc/ );
+    next if ( $host =~ /^csp/ );
     foreach my $network_hash (
         @{ $master->{$host}{'other'} },
         $master->{$host}{'busi'},
@@ -122,9 +131,10 @@ foreach my $host ( keys %$master ) {
         MyCluster::remote_exec( $ip, $cmd );
     }
 }
+
 &mylog("restart all network");
 
-$cluster->batch_exec("nohup /etc/init.d/network restart 2>&1 >/tmp/1.log &  ");
+$cluster->batch_exec("nohup /etc/init.d/network restart >/tmp/1.log 2>&1 & ");
 
 print "Finish\n";
 

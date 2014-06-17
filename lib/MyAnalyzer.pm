@@ -138,7 +138,26 @@ sub generate_hosts {
     }
     close $fh;
 }
-
+sub get_all_manage_ip{
+    my $self = shift;
+    my @all_manage_ip;
+    foreach my $host (keys %$self){
+       push @all_manage_ip , $self->{$host}{'manage'}{'ip'};
+    }
+    return @all_manage_ip;
+}
+sub get_host_from_manage_ip{
+    my $self = shift;
+    my $ip = shift;
+    my $ret;
+    foreach my $host (keys %$self){
+       if( $self->{$host}{'manage'}{'ip'} eq $ip ){
+          $ret = $host;
+          last;
+	}
+    }
+    return $ret;
+}
 sub manage_ip {
     my $self     = shift;
     my $hostname = shift;

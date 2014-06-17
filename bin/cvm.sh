@@ -53,14 +53,11 @@ expect -c "
    "
 cd $tmppath
 
-
+perl -lane 'print @F[0]  if ! /localhost/ && ! /cvm/  && !/csp/ && !/coc/' ../hosts  > /opt/msp/collect_agent/node_list
 sleep 30
 cd /opt/msp/collect_agent
-rm node_list
-perl -lane "print @F[0] if /hvn/ "  /etc/hosts > /opt/msp/collect_agent/node_list
 sh batch_install_collect_node.sh 
 cd $tmppath
-
 sleep 30
 
 /etc/init.d/cloudview status
@@ -71,10 +68,8 @@ sleep 10
 /etc/init.d/tomcat start
 }
 
-
-install_collect(){
-
-
+config_network(){
+echo 
 }
 
 uninstall(){
@@ -91,5 +86,10 @@ sleep 10
 rm  -rf /opt/msp
 
 }
-
+if [[ X$1 == 'Xuninstall' ]]
+then
+    uninstall
+    exit 0
+fi
 install
+

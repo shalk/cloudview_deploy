@@ -88,5 +88,36 @@ EOF
 
     return $cmd;
 }
+sub vm_manage_network_cmd{
+    my $net  = shift;
+    my $cmd;
+    my ( $ip, $netmask ) =
+      (   $net->{'ip'}, $net->{'netmask'} );
+        my $file_eth = <<"EOF";
+IPADDR=$ip
+NETMASK=$netmask
+STARTMODE=auto
+EOF
 
+        # for suse
+        $cmd = q{a=\`cat /tmp/mac1 \`;};
+        $cmd .= q{touch  /etc/sysconfig/network/ifcfg-\$a ;};
+        $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-\\\$a  \n";
+}
+sub vm_busi_network_cmd{
+    my $net  = shift;
+    my $cmd;
+    my ( $ip, $netmask ) =
+      (   $net->{'ip'}, $net->{'netmask'} );
+        my $file_eth = <<"EOF";
+IPADDR=$ip
+NETMASK=$netmask
+STARTMODE=auto
+EOF
+
+        # for suse
+        $cmd = q{a=\`cat /tmp/mac2 \`;};
+        $cmd .= q{touch  /etc/sysconfig/network/ifcfg-\$a ;};
+        $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-\\\$a  \n";
+}
 1;

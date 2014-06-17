@@ -5,7 +5,6 @@ our @ISA = qw/Exporter/;
 
 use Expect;
 use Carp;
-use MyCheck;
 our $debug = 0;
 
 sub new {
@@ -119,7 +118,9 @@ sub iplist {
     return wantarray ? @$self : $self;
 }
 
+
 # 类函数
+
 sub remote_exec {
     my $remoteip  = shift;
     my $remotecmd = shift;
@@ -154,7 +155,6 @@ sub remote_scp_with_password {
             ],
         );
     }
-
 }
 
 sub exe {
