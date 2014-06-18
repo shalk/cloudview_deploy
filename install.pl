@@ -3,16 +3,20 @@
 use strict;
 use warnings;
 use lib "./lib";
+use lib "./local/lib/perl5/x86_64-linux-thread-multi";
+use lib "./local/lib/perl5/";
 
 #use Smart::Comments;
 
-BEGIN {
-    unshift @INC, "local/lib/perl5/x86_64-linux-thread-multi";
-    unshift @INC, "local/lib/perl5/";
-}
+#BEGIN {
+#    unshift @INC, "local/lib/perl5/x86_64-linux-thread-multi";
+#    unshift @INC, "local/lib/perl5/";
+#}
 
 use Carp;
 use Getopt::Long;
+use Expect;
+use Data::UUID; 
 
 use MyAnalyzer;
 use MyCheck;

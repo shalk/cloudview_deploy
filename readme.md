@@ -6,32 +6,19 @@ The project can relief the deployment of CloudView which is a virtualization man
 安装准备
 =============
 
-1.下载本项目相应分支[代码](https://github.com/shalk/cloudview_deploy/archive/1.5.2p.zip)  并解压 
-重名名文件夹为 cloudview_deploy
+1.下载代码建立环境,安装cpanm,carton,安装本地库
 
-		$ mv   cloudview_deploy-分支名  cloudview_deploy
+		$ git clone https://github.com/shalk/cloudview_deploy.git
+        $ curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+        $ cpanm carton
+        $ carton install
 
-2.将cloudview 安装包放入cloudview_deploy 文件夹内
+2. 准备介质和模板
+       
+        cloudview存放在 cloudview_deploy目录下
 
-		$ cp  -rf  cloudview1.5.2.20140325  cloudview_deploy/
 
-3.将[cvm_template.rar](http://pan.baidu.com/s/1c03l64C) 放到cloudview_deploy 同一级目录：
-
-		$ ls -lt
-		total 12
-		drwxr-xr-x. 10 root root 4096 Oct  8 09:14 cloudview_deploy
-		-rw-r--r--.  1 root root    0 Sep 17 11:04 cvm_template.rar
-
-最终目录结构如下：
-
-		install/
-		|-- cloudview_deploy
-		|   |-- cloudview1.5.2.20140325
-		|	|-- ip_map
-		|   `-- install.pl
-		`-- cvm_template.rar
-
-4.修改ip_map文件：
+3.修改ip_map文件：
 
 		$ cat ip_map
 		#主机名    主机名                      业务网(可不填)
@@ -41,7 +28,21 @@ The project can relief the deployment of CloudView which is a virtualization man
         cvm   eth1,10.10.10.11,255.255.0.0    eth0,192.168.1.11,255.255.255.0
 
 按照ip_map， 配置各节点管理网，使得网络通畅。
+4.修改vm.conf文件,创建cvm,coc,csp前,务必修改名称、IP以及相关键值：
 
+        $ cat vm.conf
+        name=cvm
+        disk=/cv/cvm/cvm.img 
+        xml=/cv/cvm/cvm.xml
+        cpu=2
+        mem=4194304
+        manage_br=br0
+        busi_br=br0
+        orig=../cvm_template.qcow2
+        manage_ip=1.1.1.111
+        busi_ip=0.0.0.0 
+        username=root
+        password=111111
 
 
 
@@ -49,10 +50,9 @@ The project can relief the deployment of CloudView which is a virtualization man
 ===========
 
 		
-**步骤1**. 在主节点，执行install.sh
+**步骤1**. 在主节点，执行install
 		
-		$ cd cloudview_deploy/
-		$ perl install.pl
+		$ ./install
         #等待网络重启完成		
 
 **步骤2**. 在主节点，创建cvm

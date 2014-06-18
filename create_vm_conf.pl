@@ -3,17 +3,23 @@
 use strict;
 use warnings;
 use lib "./lib";
-
+use lib "./local/lib/perl5/x86_64-linux-thread-multi";
+use lib "./local/lib/perl5/";
 #use Smart::Comments;
-BEGIN {
-    unshift @INC, "local/lib/perl5/x86_64-linux-thread-multi";
-    unshift @INC, "local/lib/perl5/";
-}
+
+#BEGIN {
+#    unshift @INC, "local/lib/perl5/x86_64-linux-thread-multi";
+#    unshift @INC, "local/lib/perl5/";
+#}
+
 
 use Carp;
+use Socket;
 #use Getopt::Long;
 use File::Path;
 use List::Util;
+use Expect;
+use Data::UUID; 
 use Config::General qw(ParseConfig SaveConfig SaveConfigString);
 
 use MyAnalyzer;
@@ -60,7 +66,11 @@ sleep 10;
 &mylog("install cloudview start");
 $vm->install_cloudview();
 &mylog("install cloudview finish");
-$vm->net
+
+&mylog("restart network");
+$vm->network_restart();
+&mylog("restart network finish ");
+
 sub proc_bar {
     local $| = 1;
     my $i = $_[0] || return 0;
