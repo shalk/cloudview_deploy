@@ -89,6 +89,9 @@ EOF
     return $cmd;
 }
 sub vm_manage_network_cmd{
+    # description:
+    #   need ip and netmask  
+    #   excute after generate /tmp/mac1
     my $net  = shift;
     my $cmd;
     my ( $ip, $netmask ) =
@@ -105,6 +108,9 @@ EOF
         $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-\\\$a  \n";
 }
 sub vm_busi_network_cmd{
+    # description:
+    #   need ip and netmask  
+    #   excute after generate /tmp/mac2
     my $net  = shift;
     my $cmd;
     my ( $ip, $netmask ) =
@@ -119,5 +125,13 @@ EOF
         $cmd = q{a=\`cat /tmp/mac2 \`;};
         $cmd .= q{touch  /etc/sysconfig/network/ifcfg-\$a ;};
         $cmd .= "echo '$file_eth' > /etc/sysconfig/network/ifcfg-\\\$a  \n";
+}
+sub vm_start_in_after_local{
+    my $vm_name = shift;
+    my $file = "/etc/init.d/after.local";
+    my $cmd = "echo 'xm start $vm_name' >> $file;";
+    $cmd .= "cp $file /tmp/afterlocal; ";
+    $cmd .=  "uniq /tmp/afterlocal > $file";
+    return $cmd;
 }
 1;

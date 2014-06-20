@@ -44,6 +44,9 @@ my $vm = MyVm::Install->new($vm_conf);
 
 $vm->build_up_vm_from_img();
 
+# add xm start vm  in after.local
+$vm->xm_start_vm_in_after_local();
+
 #wait vm boot into system;
 
 print "VM OS is starting up , wait 120s \n";

@@ -14,15 +14,20 @@ sub new {
     my $arg = shift;
     my $self =  MyVm->new($arg);
     bless $self,$class;
+
+    my $config_filename = 'ip_map';
+    $master= MyAnalyzer->new($config_filename);
+    croak $self->{'name'}." is not in ip_map " unless defined $master->{$self->{'name'}};
+    
+    $self->{'manage_ip'} = $master->{$self->{'name'}}{'manage'}{'ip'} unless defined $self->{'manage_ip'};
+    $self->{'busi_ip'} = $master->{$self->{'name'}}{'busi'}{'ip'} unless defined $self->{'busi_ip'};
+    
     return $self;
 } 
 
 sub config_temp_ip {
     my $self = shift; 
-    my $config_filename = 'ip_map';
     my $cmd;
-    $master= MyAnalyzer->new($config_filename);
-    croak $self->{'name'}." is not in ip_map " unless defined $master->{$self->{'name'}};
     
     #set temporate manage ip
     
@@ -109,6 +114,11 @@ sub network_restart(){
     my $self = shift;  
     my $cmd = "nohup /etc/init.d/network restart 2>&1 >/tmp/1.log &  ";
     MyCluster::remote_exec( $self->{'manage_ip'}, $cmd );
+}
+sub xm_start_vm_in_after_local{
+    my $self = shift;
+    my $cmd = MyCmd::vm_start_in_after_local($self->{'name'});
+    MyCluster::exe($cmd);
 }
 
 1;
