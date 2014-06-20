@@ -22,24 +22,29 @@ use MyAnalyzer;
 use MyCheck;
 use MyCluster;
 use MyCmd;
-use MyVm;
 use MyUtil;
 
-$MyCluster::debug = 0;
+my $debug = 0;
 my $config_filename = 'ip_map';
 my $password        = '111111';
 my @iplist;
 my $help = 0;
+my $cmd ;
+my $master;
+my $cluster;
 
 GetOptions(
     "pass=s" => \$password,
     "file=s" => \$config_filename,
     "help|h" => \$help,
+    "debug=i" => \$debug,
 );
+
+$MyCluster::debug = $debug;
 
 if ($help) {
     print <<"EOF";
-Usage: perl $0  --pass  <password>  --file  <ip_map>
+Usage: perl $0  --pass  <password>  --file  <ip_map> 
 
     Options:
         --pass  give the pass of Operation System ,
@@ -58,7 +63,7 @@ EOF
 # ########################################
 #        analyze part
 # ########################################
-my $master = MyAnalyzer->new($config_filename);
+$master = MyAnalyzer->new($config_filename);
 $master->generate_hosts();
 
 &mylog("analyze finish\t\tOK");
@@ -71,7 +76,7 @@ foreach my $host ( keys %$master ) {
     next if ( $host =~ /^cvm/ );
     next if ( $host =~ /^coc/ );
     next if ( $host =~ /^csp/ );
-    if ( MyCheck::check_ip_connect($ip) ) {
+    if ( $debug || MyCheck::check_ip_connect($ip) ) {
         push @iplist, $ip;
     }
     else {
@@ -79,14 +84,15 @@ foreach my $host ( keys %$master ) {
     }
 }
 &mylog("ping finish");
-MyCheck::check_cloudview_exsit();
-MyCheck::check_cloudview_software();
+MyCheck::check_cloudview_exsit() unless $debug ;
+MyCheck::check_cloudview_software() unless $debug;
 &mylog("cloudview software check finish");
 
 #   ########################################
 #           cluster part
 #   ########################################
-my $cluster = MyCluster->new( \@iplist );
+
+$cluster = MyCluster->new( \@iplist );
 
 &mylog("setup a cluster");
 
@@ -96,16 +102,20 @@ $cluster->no_pass($password);
 &mylog("set up time sysnc");
 
 #set local time server
-my $ntp_serverip = MyUtil::local_manage_ip($master->get_all_manage_ip);
-my $local_hostname = $master->get_host_from_manage_ip($ntp_serverip);
-my $master_network = $master->manage_network($local_hostname);
-my $master_netmask = $master->manage_netmask($local_hostname);
-my $cmd            = MyCmd::ntp_server_cmd( $master_network, $master_netmask );
-MyCluster::remote_exec( $ntp_serverip, $cmd );
 
-#client sync time
-$cmd = MyCmd::ntp_client_cmd($ntp_serverip);
-$cluster->batch_exec($cmd);
+if( $debug == 0){
+    my $ntp_serverip = MyUtil::local_manage_ip($master->get_all_manage_ip);
+    my $local_hostname = $master->get_host_from_manage_ip($ntp_serverip);
+    my $master_network = $master->manage_network($local_hostname);
+    my $master_netmask = $master->manage_netmask($local_hostname);
+    
+    $cmd = MyCmd::ntp_server_cmd( $master_network, $master_netmask );
+    MyCluster::remote_exec( $ntp_serverip, $cmd );
+    
+    #client sync time
+    $cmd = MyCmd::ntp_client_cmd($ntp_serverip);
+    $cluster->batch_exec($cmd);
+}
 
 #change hostname
 &mylog("setup hostname");
@@ -142,11 +152,11 @@ $cluster->batch_exec("nohup /etc/init.d/network restart >/tmp/1.log 2>&1 & ");
 
 &mylog("restart all network finish ");
 
-&mylog("wait network is stable,about 20 seconds...");
-sleep 20;
+&mylog("wait network stable,about 20 seconds...");
+sleep 20 unless $debug;
 
 &mylog("ovs-init");
-$cluster->batch_exec("nohup  /sbin/ovs-init   >/dev/null 2>&1  & ")
+$cluster->batch_exec("nohup  /sbin/ovs-init   >/dev/null 2>&1  & ");
 
 print "Finish\n";
 

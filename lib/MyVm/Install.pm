@@ -17,6 +17,7 @@ sub new {
 
     my $config_filename = 'ip_map';
     $master= MyAnalyzer->new($config_filename);
+    $master->generate_hosts();
     croak $self->{'name'}." is not in ip_map " unless defined $master->{$self->{'name'}};
     
     $self->{'manage_ip'} = $master->{$self->{'name'}}{'manage'}{'ip'} unless defined $self->{'manage_ip'};

@@ -31,7 +31,11 @@ sub no_pass {
 
     croak "iplist is null "   unless scalar @iplist;
     croak "passwd is needed " unless $password;
-
+    
+    if($debug){
+        print "@iplist  config no password\n" ;
+        return; 
+    }
     #step 1
     my $type = 'rsa';
 

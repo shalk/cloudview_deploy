@@ -15,7 +15,7 @@ use lib "./local/lib/perl5/";
 
 use Carp;
 use Socket;
-#use Getopt::Long;
+use Getopt::Long;
 use File::Path;
 use List::Util;
 use Expect;
@@ -31,9 +31,14 @@ use MyVm;
 use MyVm::Install;
 use Cwd qw(abs_path);
 
-$MyVm::debug      = 0;
-$MyCluster::debug = 0;
+my $debug = 0;
 
+GetOptions(
+    "debug=i" => \$debug,
+);
+
+$MyVm::debug      = $debug;
+$MyCluster::debug = $debug;
 #step 1 get conf
 my $vm_conf_filename = "vm.conf";
 my %vm_conf_hash = ParseConfig( $vm_conf_filename);
@@ -89,7 +94,7 @@ sub usage {
     print <<"EOF";
 Usage: perl create_vm_conf.pl  
    
-        please modify vm.conf:
+        please modify vm.conf
          
 EOF
 }
