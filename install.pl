@@ -148,8 +148,9 @@ foreach my $host ( keys %$master ) {
 
 &mylog("restart all network");
 
-$cmd = "echo '/etc/init.d/network restart' > /tmp/netrestart.sh;";
-$cmd .= "echo '/sbin/ovs-init' > /tmp/netrestart.sh;";
+$cmd = "echo 'sleep 1' > /tmp/netrestart.sh;";
+$cmd .= "echo '/etc/init.d/network restart' >> /tmp/netrestart.sh;";
+$cmd .= "echo '/sbin/ovs-init' >> /tmp/netrestart.sh;";
 $cluster->batch_exec($cmd);
 $cmd = "nohup bash /tmp/netrestart.sh >/tmp/ovs.log 2>&1 &" ;
 $cluster->batch_exec($cmd);
