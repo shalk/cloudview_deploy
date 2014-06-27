@@ -130,6 +130,11 @@ foreach my $host ( keys %$master ) {
 
 # make up network
 &mylog("setup network");
+&mylog("clean all bridge cfg ");
+$cmd = "cd /etc/sysconfig/network/;mkdir bak/; mv -f ifcfg-br* ./bak ; ";
+$cluster->($cmd);
+&mylog("clean all bridge cfg finish");
+
 foreach my $host ( keys %$master ) {
     next if ( $host =~ /^cvm/ );
     next if ( $host =~ /^coc/ );

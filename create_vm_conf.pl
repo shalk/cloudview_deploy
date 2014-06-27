@@ -42,6 +42,7 @@ $MyCluster::debug = $debug;
 #step 1 get conf
 my $vm_conf_filename = "vm.conf";
 my %vm_conf_hash = ParseConfig( $vm_conf_filename);
+my $sleep_time = $vm_conf_hash{'sleep'};
 my $vm_conf = \%vm_conf_hash;
 
 #step 2 define vm and boot up
@@ -64,8 +65,10 @@ print "\n";
 
 &mylog("config temp ip start ");
 $vm->config_temp_ip();
-&mylog("\nconfig temp ip finish");
+print "\n";
+&mylog("config temp ip finish");
 
+sleep $sleep_time; 
 sleep 10;
 &mylog("config vm env start");
 $vm->set_env();
