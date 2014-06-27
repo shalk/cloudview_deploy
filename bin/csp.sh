@@ -64,7 +64,7 @@ sleep 30
 /etc/init.d/tomcat start
 sleep 10
 /etc/init.d/tomcat start
-
+/etc/init.d/cloudview restart
 
 }
 uninstall(){

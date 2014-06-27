@@ -9,9 +9,13 @@ The project can relief the deployment of CloudView which is a virtualization man
 1.下载代码建立环境,安装cpanm,carton,安装本地库
 
 		$ git clone https://github.com/shalk/cloudview_deploy.git
+        $ cd cloudview_deploy
         $ curl -L http://cpanmin.us | perl - --sudo App::cpanminus
         $ cpanm carton
         $ carton install
+        $ cpanm Par::Packer
+        $ sh tar.sh
+        可执行文件会产生到release目录下
 
 2. 准备介质和模板
        
@@ -31,12 +35,12 @@ The project can relief the deployment of CloudView which is a virtualization man
 4.修改vm.conf文件,创建cvm,coc,csp前,务必修改名称、IP以及相关键值：
 
         $ cat vm.conf
-        name=cvm
-        disk=/cv/cvm/cvm.img 
-        xml=/cv/cvm/cvm.xml
-        cpu=2
+        name=cvm                                
+        disk=/cv/cvm/cvm.img                      
+        xml=/cv/cvm/cvm.xml                      
+        cpu=2                                    
         mem=4194304
-        manage_br=br0
+        manage_br=br1
         busi_br=br0
         orig=../cvm_template.qcow2
         manage_ip=1.1.1.111
@@ -55,22 +59,21 @@ The project can relief the deployment of CloudView which is a virtualization man
 		$ ./install
         #等待网络重启完成		
 
-**步骤2**. 在主节点，创建cvm
+**步骤2**. 在主节点，修改vm.conf ,创建cvm
 		
-		$  perl create_vm.pl  --name cvm  --orig /root/shalk/cvm_template.qcow2
+		$ vim vm.conf
+        $ ./create_vm
 
-若需要指定安装目录：
+**步骤3**. 在主节点，修改vm.conf ,创建coc
 		
-		$  perl create_vm.pl  -name cvm --orig  /root/shalk/cvm_template.qcow2  --dest /dsx01/img/
+		$ vim vm.conf
+        $ ./create_vm
 
+**步骤4**. 在主节点，修改vm.conf ,创建csp
 		
-**步骤3**.(可选) 在主节点，创建coc
+		$ vim vm.conf
+        $ ./create_vm
 		
-		$ perl create_vm.pl  --name coc
-
-若需要指定安装目录：
-		
-		$ sh create_coc.sh  /dsx01/img/
 
 
 
