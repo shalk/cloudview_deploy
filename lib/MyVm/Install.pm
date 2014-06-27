@@ -65,6 +65,7 @@ sub set_env{
         "scp -r ../cloudview_deploy " . $self->{'manage_ip'} . ":/root/ " );
     
     #client sync time
+    if( $MyVm::debug == 0){
     my $ntp_serverip = MyUtil::get_ip_address($self->{'manage_br'});
     my $master_netmask = MyUtil::get_netmask_from_eth($self->{'manage_br'});
     my $master_network = MyAnalyzer::calc_network_by_netmask($ntp_serverip,$master_netmask);
@@ -74,7 +75,7 @@ sub set_env{
     
     $cmd = MyCmd::ntp_client_cmd($ntp_serverip);
     MyCluster::remote_exec( $self->{'manage_ip'}, $cmd );
-    
+    }
     #change hostname
     
     $cmd = MyCmd::set_hostname_cmd( $self->{'name'} );

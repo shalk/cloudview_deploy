@@ -140,6 +140,7 @@ sub remote_scp_with_password {
     my $cmd        = "scp -r  $localpath ${remoteip}:$remotepath ";
     if($debug == 1){
         print $cmd."\n";
+        return ;
     }
     my $exp        = Expect->spawn($cmd) or croak "can not spawn ($cmd) ";
     my $timeout    = 30;

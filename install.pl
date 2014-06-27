@@ -132,7 +132,7 @@ foreach my $host ( keys %$master ) {
 &mylog("setup network");
 &mylog("clean all bridge cfg ");
 $cmd = "cd /etc/sysconfig/network/;mkdir bak/; mv -f ifcfg-br* ./bak ; ";
-$cluster->($cmd);
+$cluster->batch_exec($cmd);
 &mylog("clean all bridge cfg finish");
 
 foreach my $host ( keys %$master ) {

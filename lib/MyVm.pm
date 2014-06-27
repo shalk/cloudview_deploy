@@ -220,7 +220,11 @@ sub virsh_console_exec {
     croak 'username is needed for the os ' unless defined $username;
     croak 'username is needed for the os ' unless defined $username;
     my $cmd        = "virsh console ".$self->{'name'};
-
+    if($debug){
+        print $cmd ,"\n";
+        print "\t$_\n" for @$remote_cmd;
+        return;
+    }
     my $timeout = 20;
     my $exp     = new Expect;
     $exp->raw_pty(1);

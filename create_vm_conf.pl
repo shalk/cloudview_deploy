@@ -31,7 +31,7 @@ use MyVm;
 use MyVm::Install;
 use Cwd qw(abs_path);
 
-my $debug = 0;
+my $debug = 0 ;
 
 GetOptions(
     "debug=i" => \$debug,
@@ -48,32 +48,32 @@ my $vm_conf = \%vm_conf_hash;
 #step 2 define vm and boot up
 my $vm = MyVm::Install->new($vm_conf);
 
-$vm->build_up_vm_from_img();
+$vm->build_up_vm_from_img() if $debug == 0;
 
 # add xm start vm  in after.local
 $vm->xm_start_vm_in_after_local();
 
 #wait vm boot into system;
-
-print "VM OS is starting up , wait 120s \n";
-my $n = 120;
-for ( my $i = 1 ; $i <= $n ; $i++ ) {
-    &proc_bar( $i, $n );
-    select( undef, undef, undef, 1 );
+if($debug == 0){
+    print "VM OS is starting up , wait 120s \n";
+    my $n = 120;
+    for ( my $i = 1 ; $i <= $n ; $i++ ) {
+        &proc_bar( $i, $n );
+        select( undef, undef, undef, 1 );
+    }
+    print "\n";
 }
-print "\n";
-
 &mylog("config temp ip start ");
 $vm->config_temp_ip();
 print "\n";
 &mylog("config temp ip finish");
 
-sleep $sleep_time; 
-sleep 10;
+sleep $sleep_time if $debug == 0; 
+sleep 10 if $debug == 0;
 &mylog("config vm env start");
 $vm->set_env();
 &mylog("config vm env finish ");
-sleep 10;
+sleep 10 if $debug == 0;
 &mylog("install cloudview start");
 $vm->install_cloudview();
 &mylog("install cloudview finish");
