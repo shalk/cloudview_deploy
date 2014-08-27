@@ -146,10 +146,20 @@ sub generate_xml {
     my $vm_cpu = $self->{'cpu'} ; 
     my $vm_img = $self->{'disk'};
     croak "vm img disk undefined " unless defined $vm_img;
-    my $vm_br1 = $self->{'manage_br'} ;
-    my $vm_br2 = $self->{'busi_br'} ;
-    my $vm_mac1 = $self->{'manage_mac'};
-    my $vm_mac2 = $self->{'busi_mac'};
+    my $vm_br1,$vm_br2;
+    my $vm_mac1,$vm_mac2;
+    if($self->{'manage_eth'} eq  'eth0'){
+        $vm_br1 = $self->{'manage_br'} ;
+        $vm_mac1 = $self->{'manage_mac'};
+        $vm_br2 = $self->{'busi_br'} ;
+        $vm_mac2 = $self->{'busi_mac'};
+    }else { # if($self->{'busi_eth'} eq  'eth0'){
+        $vm_br2 = $self->{'manage_br'} ;
+        $vm_mac2 = $self->{'manage_mac'};
+        $vm_br1 = $self->{'busi_br'} ;
+        $vm_mac1 = $self->{'busi_mac'};
+        #  }else{
+    }
 
 
     my $xml_file = <<"EOF";

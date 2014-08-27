@@ -40,6 +40,7 @@ sub ntp_client_cmd {
 cp -rf /etc/ntp.cof.bak /etc/ntp.conf
  [ -f /etc/ntp.conf.bak ] ||  cp -rf /etc/ntp.conf /etc/ntp.cof.bak
 sntp -P no -r $serverip ; 
+sed -i '/^server /d' /etc/ntp.conf;
 echo server $serverip prefer >> /etc/ntp.conf ;
 hwclock -w;
 chkconfig ntp on;

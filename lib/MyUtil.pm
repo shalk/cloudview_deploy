@@ -47,4 +47,22 @@ sub local_manage_ip {
     warn "current machine ip is not in ip_map " if scalar @local_manage_ip == 0;
     return $local_manage_ip[0];
 }
+sub get_cvm_ip {
+    my $ip;
+    open  my $fh, '< ip_map' or die "cant not open ip_map";
+    while(<>){
+        next unless /cvm\s*(:?\w+?),(\S+),/;
+        $ip = $2;
+    }
+    close($fh);
+    if(! defined $ip){
+        open  my $fh1, '< hosts' or die "cant not open hosts";
+        while(<>){
+            next unless /cvm\s*(:?\w+?),(\S+),/;
+            $ip = $2;
+        }
+        close($fh1);
+    }
+    return $ip;
+}
 1;

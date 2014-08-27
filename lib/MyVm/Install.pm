@@ -19,10 +19,11 @@ sub new {
     $master= MyAnalyzer->new($config_filename);
     $master->generate_hosts();
     croak $self->{'name'}." is not in ip_map " unless defined $master->{$self->{'name'}};
-    
+
     $self->{'manage_ip'} = $master->{$self->{'name'}}{'manage'}{'ip'} unless defined $self->{'manage_ip'};
     $self->{'busi_ip'} = $master->{$self->{'name'}}{'busi'}{'ip'} unless defined $self->{'busi_ip'};
-    
+    $self->{'manage_eth'} = $master->{$self->{'name'}}{'manage'}{'eth'};
+    $self->{'busi_eth'} = $master->{$self->{'name'}}{'busi'}{'eth'};
     return $self;
 } 
 

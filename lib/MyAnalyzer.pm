@@ -130,7 +130,8 @@ sub check_netmask {
 sub generate_hosts {
 
     my $self = shift;
-    open my $fh, '> hosts' or die "can not open hosts";
+    my $filename = shift || 'hosts';
+    open my $fh, "> $filename" or die "can not open hosts";
     print $fh "127.0.0.1 localhost\n";
     foreach my $host ( keys %$self ) {
         my $ip = $self->{$host}{'manage'}{'ip'};

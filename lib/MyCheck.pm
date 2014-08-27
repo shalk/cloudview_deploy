@@ -21,7 +21,7 @@ sub check_ip_connect {
     return $ret;
 }
 
-sub check_cloudview_exsit {
+sub check_cloudview_exist {
     my @file = < cloudview* >;
     if ( scalar @file == 1 ) {
         rename $file[0], 'cloudview' unless $file[0] eq 'cloudview';
